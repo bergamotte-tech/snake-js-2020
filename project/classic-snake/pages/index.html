@@ -1,45 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../style.css">
-    <link rel="stylesheet" href="../styles/style.css">
-    <link rel="stylesheet" href="../styles/components.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../style.css" />
+    <link rel="stylesheet" href="../styles/style.css" />
+    <link rel="stylesheet" href="../styles/components.css" />
     <title>Snake</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="classic-snake">
-        <div id="page-banner">
-            <h1 class="title"></h1>
-        </div>
+      <div id="page-banner">
+        <h1 class="title"></h1>
+      </div>
 
-        <div id="mode-menu">
-            <button class="mode-solo" onclick="window.location.hash = 'mode-solo'">Solo</button>
-            <button class="mode-multi" onclick="window.location.hash = 'mode-multi'">Multi</button>
-        </div>
+      <div id="mode-menu">
+        <button class="mode-solo" onclick="window.location.hash = 'mode-solo'">Solo</button>
+        <button class="mode-multi" onclick="window.location.hash = 'mode-multi'">Multi</button>
+      </div>
 
-        <div id="solo-level-menu">
-            <button class="level" onclick="window.location.hash = 'solo-level-1'">LV 1</button>
-            <button class="level" onclick="window.location.hash = 'solo-level-2'">LV 2</button>
-            <button class="level" onclick="window.location.hash = 'solo-level-3'">LV 3</button>
-        </div>
+      <div id="solo-level-menu">
+        <button class="level" onclick="window.location.hash = 'solo-level-1'">LV 1</button>
+        <button class="level" onclick="window.location.hash = 'solo-level-2'">LV 2</button>
+        <button class="level" onclick="window.location.hash = 'solo-level-3'">LV 3</button>
+      </div>
 
-        <div id="multi-level-menu">
-            <button class="level" onclick="window.location.hash = 'multi-level-1'">LV 1</button>
-            <button class="level" onclick="window.location.hash = 'multi-level-2'">LV 2</button>
-            <button class="level" onclick="window.location.hash = 'multi-level-3'">LV 3</button>
-        </div>
+      <div id="multi-level-menu">
+        <button class="level" onclick="window.location.hash = 'multi-level-1'">LV 1</button>
+        <button class="level" onclick="window.location.hash = 'multi-level-2'">LV 2</button>
+        <button class="level" onclick="window.location.hash = 'multi-level-3'">LV 3</button>
+      </div>
 
-        <div id="in-game">
-            <canvas></canvas>
-        </div>
+      <div id="in-game">
+        <canvas></canvas>
+      </div>
     </div>
 
     <script src="../scripts/page-handler.js" type="module"></script>
-</body>
-
-
+  </body>
 </html>
