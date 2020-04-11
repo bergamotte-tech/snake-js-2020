@@ -1,3 +1,5 @@
+import runGame from './game.js';
+
 
 window.addEventListener("load", function () {
     // DOM ELEMENTS
@@ -87,10 +89,13 @@ window.addEventListener("load", function () {
             titlePageBanner.innerHTML = "Level " + LevelNumber;
             // CLEAR PAGE
             clearDynamicContent();
+            // DISPLAY CANVAS
+            divInGame.style.display = "flex";
             // SET CANVAS SIZE
             canvas.width = 600;
             canvas.height = 600;
             // RUN GAME
+            runGame(canvas, "solo", 10);
         }
         else {
             // SET PAGE TITLE
@@ -116,10 +121,13 @@ window.addEventListener("load", function () {
             titlePageBanner.innerHTML = "Level " + LevelNumber;
             // CLEAR PAGE
             clearDynamicContent();
+            // DISPLAY CANVAS
+            divInGame.style.display = "flex";
             // SET CANVAS SIZE
             canvas.width = 600;
             canvas.height = 600;
             // RUN GAME
+            runGame(canvas, "multi", 10);
         }
         else {
             // SET PAGE TITLE
