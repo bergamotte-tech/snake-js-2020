@@ -1,11 +1,13 @@
 import Snake from './classes/game/Snake.js';
-//TODO temporary
-const params = {
-    BLOCK_SCALE: 10
-}
-//remove
 
 function runGame(canvas, mode) {
+
+    //TODO temporary
+    const params = {
+        BLOCK_SCALE: canvas.height / 60
+    }
+    //remove
+
     if (mode === "solo" || mode === "multi") {
         const ctx = canvas.getContext("2d");
         const rows = canvas.height / params.BLOCK_SCALE;

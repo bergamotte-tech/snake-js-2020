@@ -1,9 +1,3 @@
-//TODO temporary
-const params = {
-    BLOCK_SCALE: 10
-}
-//remove
-
 class Snake {
     constructor(ctx) {
         this.ctx = ctx;
@@ -15,7 +9,7 @@ class Snake {
 
     draw() {
         this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(this.x, this.y, params.BLOCK_SCALE, params.BLOCK_SCALE);
+        this.ctx.fillRect(this.x, this.y, 10, 10);
     }
 }
 
