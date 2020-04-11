@@ -1,5 +1,9 @@
 import Snake from './classes/game/Snake.js';
-import params from './params.js';
+//TODO temporary
+const params = {
+    BLOCK_SCALE: 10
+}
+//remove
 
 function runGame(canvas, mode) {
     if (mode === "solo" || mode === "multi") {

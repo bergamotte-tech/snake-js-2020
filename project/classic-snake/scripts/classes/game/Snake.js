@@ -1,4 +1,8 @@
-import params from './params.js';
+//TODO temporary
+const params = {
+    BLOCK_SCALE: 10
+}
+//remove
 
 class Snake {
     constructor(ctx) {
