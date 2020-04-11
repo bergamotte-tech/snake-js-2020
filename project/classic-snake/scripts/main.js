@@ -1,4 +1,4 @@
-import runGame from './game.js';
+import initGame from './game.js';
 
 
 window.addEventListener("load", function () {
@@ -32,7 +32,7 @@ window.addEventListener("load", function () {
     /*------------------------------------------------------------------------------------------*/
     function updateDynamicContent() {
         const requestedPage = window.location.hash;
-
+        // TODO populate dynamically
         switch (requestedPage) {
             case "#mode-solo":
                 initSoloMode();
@@ -83,19 +83,21 @@ window.addEventListener("load", function () {
         // DISPLAY SOLO LEVELS
         divSoloLevelMenu.style.display = "flex";
     }
-    function initSoloLevel(LevelNumber) {
+    function initSoloLevel(levelNumber) {
         // CHECK PARAMETER
-        if (LevelNumber > 0 && LevelNumber <= buttonsSoloLevelMenu.length) {
+        if (levelNumber > 0 && levelNumber <= buttonsSoloLevelMenu.length) {
             // SET PAGE TITLE
-            titlePageBanner.innerHTML = "Level " + LevelNumber;
+            titlePageBanner.innerHTML = "Level " + levelNumber;
             // CLEAR PAGE
             clearDynamicContent();
+            // TURN ON GAME DIV
+            divInGame.style.display = "flex";
             // RUN GAME (ALSO DISPLAYS CANVAS)
-            runGame(canvas, "solo", level);
+            initGame(canvas, "solo", levelNumber);
         }
         else {
             // SET PAGE TITLE
-            titlePageBanner.innerHTML = "Level " + LevelNumber + " does not exist...";
+            titlePageBanner.innerHTML = "Level " + levelNumber + " does not exist...";
         }
     }
     /*------------------------------------------------------------------------------------------*/
@@ -110,19 +112,19 @@ window.addEventListener("load", function () {
         // DISPLAY MULTI LEVELS
         divMultiLevelMenu.style.display = "flex";
     }
-    function initMultiLevel(LevelNumber) {
+    function initMultiLevel(levelNumber) {
         // CHECK PARAMETER
-        if (LevelNumber > 0 && LevelNumber <= buttonsMultiLevelMenu.length) {
+        if (levelNumber > 0 && levelNumber <= buttonsMultiLevelMenu.length) {
             // SET PAGE TITLE
-            titlePageBanner.innerHTML = "Level " + LevelNumber;
+            titlePageBanner.innerHTML = "Level " + levelNumber;
             // CLEAR PAGE
             clearDynamicContent();
             // RUN GAME
-            runGame(canvas, "multi");
+            initGame(canvas, "multi", levelNumber);
         }
         else {
             // SET PAGE TITLE
-            titlePageBanner.innerHTML = "Level " + LevelNumber + " does not exist...";
+            titlePageBanner.innerHTML = "Level " + levelNumber + " does not exist...";
         }
     }
     /*------------------------------------------------------------------------------------------*/
@@ -134,13 +136,6 @@ window.addEventListener("load", function () {
         DynamicContent.forEach(element => {
             element.style.display = "none";
         });
-    }
-    /*------------------------------------------------------------------------------------------*/
-
-
-    /*------------------------------------------------------------------------------------------*/
-    function setCanvasDimensions(canvas) {
-
     }
     /*------------------------------------------------------------------------------------------*/
 });
