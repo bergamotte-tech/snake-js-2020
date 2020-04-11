@@ -1,4 +1,4 @@
-import Snake from './classes/game/Snake.js';
+import Snake from "./classes/game/Snake.js";
 
 /*------------------------------------------------------------------------------------------*/
 function initGame(canvas, mode, levelNumber) {
@@ -42,7 +42,7 @@ function initGame(canvas, mode, levelNumber) {
             const snake_2 = new Snake();
         }
     }
-    else console.error("Mode " + mode + " does not exist");
+} else console.error("Mode " + mode + " does not exist");
 }
 /*------------------------------------------------------------------------------------------*/
 
