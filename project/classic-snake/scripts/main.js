@@ -90,13 +90,8 @@ window.addEventListener("load", function () {
             titlePageBanner.innerHTML = "Level " + LevelNumber;
             // CLEAR PAGE
             clearDynamicContent();
-            // SET CANVAS SIZE
-            canvas.width = 600;
-            canvas.height = 600;
-            // DISPLAY CANVAS
-            divInGame.style.display = "flex";
-            // RUN GAME
-            runGame(canvas, "solo");
+            // RUN GAME (ALSO DISPLAYS CANVAS)
+            runGame(canvas, "solo", level);
         }
         else {
             // SET PAGE TITLE
@@ -122,11 +117,6 @@ window.addEventListener("load", function () {
             titlePageBanner.innerHTML = "Level " + LevelNumber;
             // CLEAR PAGE
             clearDynamicContent();
-            // SET CANVAS SIZE
-            canvas.width = 600;
-            canvas.height = 600;
-            // DISPLAY CANVAS
-            divInGame.style.display = "flex";
             // RUN GAME
             runGame(canvas, "multi");
         }
@@ -144,6 +134,13 @@ window.addEventListener("load", function () {
         DynamicContent.forEach(element => {
             element.style.display = "none";
         });
+    }
+    /*------------------------------------------------------------------------------------------*/
+
+
+    /*------------------------------------------------------------------------------------------*/
+    function setCanvasDimensions(canvas) {
+
     }
     /*------------------------------------------------------------------------------------------*/
 });
