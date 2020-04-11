@@ -22,6 +22,7 @@ window.addEventListener("load", function () {
     // INIT
     init();
     function init() {
+
         updateDynamicContent();
         // EVENT LISTENERS
         window.addEventListener("hashchange", updateDynamicContent, false);
@@ -89,13 +90,13 @@ window.addEventListener("load", function () {
             titlePageBanner.innerHTML = "Level " + LevelNumber;
             // CLEAR PAGE
             clearDynamicContent();
-            // DISPLAY CANVAS
-            divInGame.style.display = "flex";
             // SET CANVAS SIZE
             canvas.width = 600;
             canvas.height = 600;
+            // DISPLAY CANVAS
+            divInGame.style.display = "flex";
             // RUN GAME
-            runGame(canvas, "solo", 10);
+            runGame(canvas, "solo");
         }
         else {
             // SET PAGE TITLE
@@ -121,13 +122,13 @@ window.addEventListener("load", function () {
             titlePageBanner.innerHTML = "Level " + LevelNumber;
             // CLEAR PAGE
             clearDynamicContent();
-            // DISPLAY CANVAS
-            divInGame.style.display = "flex";
             // SET CANVAS SIZE
             canvas.width = 600;
             canvas.height = 600;
+            // DISPLAY CANVAS
+            divInGame.style.display = "flex";
             // RUN GAME
-            runGame(canvas, "multi", 10);
+            runGame(canvas, "multi");
         }
         else {
             // SET PAGE TITLE

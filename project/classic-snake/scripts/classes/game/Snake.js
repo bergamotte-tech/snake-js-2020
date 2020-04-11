@@ -4,12 +4,12 @@ class Snake {
     this.x = 0;
     this.y = 0;
     this.length = 1;
-    this.color = "white";
+    this.color = "#FFFFFF";
   }
 
   draw() {
-    this.ctx.fillStyle = color;
-    this.ctx.fillRect(this.x, this.y, 1, 1);
+    this.ctx.fillStyle = this.color;
+    this.ctx.fillRect(this.x, this.y, 10, 10);
   }
 }
 
