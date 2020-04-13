@@ -5,15 +5,13 @@ class Snake {
     this.body = body.map(([x, y]) => [x, y]);
     this.xdir = 0;
     this.ydir = 0;
-    this.color = "#FFFFFF";
+    this.color = "white";
+    this.availableColors = ["blue", "white", "yellow", "green", "pink"];
   }
 
   setDirection(direction) {
     this.xdir = direction[0];
     this.ydir = direction[1];
-    console.log("xdir : " + this.xdir);
-    console.log("ydir : " + this.ydir);
-
   }
 
   update() {
@@ -34,6 +32,10 @@ class Snake {
       this.ctx.fillRect(coordinates[0] * this.unit, coordinates[1] * this.unit, this.unit, this.unit);
       this.ctx.strokeRect(coordinates[0] * this.unit, coordinates[1] * this.unit, this.unit, this.unit);
     });
+  }
+
+  randomColor() {
+    this.color = this.availableColors[Math.floor(Math.random() * this.availableColors.length)];
   }
 }
 

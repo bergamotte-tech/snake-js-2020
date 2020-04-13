@@ -23,8 +23,6 @@ window.addEventListener("load", function () {
     /*------------------------------------------------------------------------------------------*/
     function updateDynamicContent() {
         const requestedPage = window.location.hash;
-        console.log(requestedPage);
-
         switch (requestedPage) {
             case "#mode-solo":
                 initSoloMode();

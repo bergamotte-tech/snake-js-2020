@@ -4,14 +4,17 @@ const FOOD = 20;
 const WALL = 30;
 
 class GameState {
-    constructor(dimensions, delay, wallsLocations, foodsLocations, snakeLocations) {
+    constructor(unit, dimensions, delay, wallsLocations, gameSnakes, gameFoods) {
+        this.unit = unit;
         this.dimensions = [...dimensions];
         this.delay = delay;
         this.wallsLocations = wallsLocations.map(([x, y]) => [x, y]);
-        this.foodsLocations = foodsLocations.map(([x, y]) => [x, y]);
-        this.snakeLocations = snakeLocations.map(([x, y]) => [x, y]);
+        this.gameSnakes = [...gameSnakes];
+        this.gameFoods = [...gameFoods];
 
-        this.world = [];
+        this.rows = Math.floor(this.dimensions[0] / unit);
+        this.columns = Math.floor(this.dimensions[1] / unit);
+        this.world = this.initWorld(this.rows, this.columns);
     }
 
     initWorld(rows, columns) {
@@ -24,7 +27,7 @@ class GameState {
             }
             tempWorld.push(line);
         }
-        this.world = tempWorld;
+        return tempWorld;
     }
 
     updateWorld() {
