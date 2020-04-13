@@ -22,7 +22,8 @@ class GameSupervisor {
       const line = [];
 
       for (let j = 0; j < columns; j++) {
-        line[j] = EMPTY;
+        const code = this.getWhoIsHere(j, i);
+        line[j] = code;
       }
       tempWorld[i] = line;
     }
@@ -46,6 +47,37 @@ class GameSupervisor {
         });
       });
     });
+  }
+
+  getWhoIsHere(x, y) {
+    let res = EMPTY;
+    let found = false;
+    if (!found) {
+      this.gameWalls.forEach(wall => {
+        if (wall.coordinates[0] === x && wall.coordinates[1] === y) {
+          res = WALL; found = true;
+        }
+      });
+    }
+
+    if (!found) {
+      this.gameFoods.forEach(food => {
+        if (food.coordinates[0] === x && food.coordinates[1] === y) {
+          res = FOOD; found = true;
+        }
+      });
+    }
+
+    if (!found) {
+      this.gameSnakes.forEach(snake => {
+        snake.body.forEach(coordinates => {
+          if (coordinates[0] === x && coordinates[1] === y) {
+            res = SNAKE; found = true;
+          }
+        });
+      });
+    }
+    return res;
   }
 }
 
