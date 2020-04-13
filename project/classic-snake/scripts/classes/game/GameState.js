@@ -4,39 +4,31 @@ const FOOD = 20;
 const WALL = 30;
 
 class GameState {
-    constructor(unit, dimensions, delay, wallsLocations, gameSnakes, gameFoods) {
-        this.unit = unit;
+    constructor(dimensions, delay, wallsLocations, gameSnakes, gameFoods) {
         this.dimensions = [...dimensions];
         this.delay = delay;
         this.wallsLocations = wallsLocations.map(([x, y]) => [x, y]);
         this.gameSnakes = [...gameSnakes];
         this.gameFoods = [...gameFoods];
 
-        this.rows = Math.floor(this.dimensions[0] / unit);
-        this.columns = Math.floor(this.dimensions[1] / unit);
+        this.columns = this.dimensions[0];
+        this.rows = this.dimensions[1];
         this.world = this.initWorld(this.rows, this.columns);
     }
 
     initWorld(rows, columns) {
         let tempWorld = [];
-        for (let index = 0; index < rows; index++) {
+        for (let i = 0; i < rows; i++) {
             const line = [];
 
-            for (let index = 0; index < columns; index++) {
-                line.push(EMPTY);
+            for (let j = 0; j < columns; j++) {
+                line[j] = EMPTY;
             }
-            tempWorld.push(line);
+            tempWorld[i] = line;
         }
         return tempWorld;
     }
 
-    updateWorld() {
-        this.world.forEach(row => {
-            row.forEach(block => {
-                block = EMPTY;
-            });
-        });
-    }
 }
 
 export { GameState as default };

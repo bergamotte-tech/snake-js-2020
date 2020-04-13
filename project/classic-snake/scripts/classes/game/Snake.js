@@ -1,8 +1,10 @@
 class Snake {
-  constructor(ctx, unit, body) {
+  constructor(ctx, scale, body, commandPalette) {
     this.ctx = ctx;
-    this.unit = unit;
+    this.scale = scale;
     this.body = body.map(([x, y]) => [x, y]);
+    this.commandPalette = commandPalette;
+
     this.xdir = 0;
     this.ydir = 0;
     this.color = "white";
@@ -29,13 +31,17 @@ class Snake {
     this.ctx.strokeStyle = "grey";
 
     this.body.forEach(coordinates => {
-      this.ctx.fillRect(coordinates[0] * this.unit, coordinates[1] * this.unit, this.unit, this.unit);
-      this.ctx.strokeRect(coordinates[0] * this.unit, coordinates[1] * this.unit, this.unit, this.unit);
+      this.ctx.fillRect(coordinates[0] * this.scale, coordinates[1] * this.scale, this.scale, this.scale);
+      this.ctx.strokeRect(coordinates[0] * this.scale, coordinates[1] * this.scale, this.scale, this.scale);
     });
   }
 
   randomColor() {
     this.color = this.availableColors[Math.floor(Math.random() * this.availableColors.length)];
+  }
+
+  setCommandPalette(upKey, rightKey, downKey, leftKey) {
+    this.commandPalette.changeCommands(upKey, rightKey, downKey, leftKey)
   }
 }
 

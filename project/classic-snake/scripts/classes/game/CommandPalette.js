@@ -29,7 +29,12 @@ class CommandPalette {
         this.currentDirection = direction;
     }
 
-
+    changeCommands(upKey, rightKey, downKey, leftKey) {
+        this.up = upKey;
+        this.right = rightKey;
+        this.down = downKey;
+        this.left = leftKey;
+    }
 }
 
 export { CommandPalette as default };

@@ -1,50 +1,47 @@
 import Snake from "./classes/game/Snake.js";
 import Food from "./classes/game/Food.js";
-import CommandPalette from "./classes/game/CommandPalette.js";
 import GameState from "./classes/game/GameState.js";
 
 /*------------------------------------------------------------------------------------------*/
 function runGame(canvas, mode, levelNumber) {
     if (mode === "solo" || mode === "multi") {
-        const unit = 15;
+        const scale = 10;
         const ctx = canvas.getContext("2d");
 
         // GET LEVEL INFOS
-        const level = getLevelObject(mode, levelNumber).catch(error => {
-            console.error(error);
-        });
+        const level = getLevelObject(mode, levelNumber);
 
         // CREATE ELEMENTS
+        /* SNAKES AND COMMANDS */
         const snakesCoordinates = level.snakes;
         const gameSnakes = [];
         snakesCoordinates.forEach(snakeCoordinates => {
-            const newSnake = new Snake(ctx, unit, snakeCoordinates);
+            const commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", document);
+            const newSnake = new Snake(ctx, scale, snakeCoordinates, commandPalette);
+            i++;
             newSnake.randomColor();
             gameSnakes.push(newSnake);
         });
+        /* FOODS */
         const foodsCoordinates = level.foods;
         const gameFoods = [];
         foodsCoordinates.forEach(foodCoordinates => {
-            const newFood = new Food(ctx, unit, foodCoordinates);
+            const newFood = new Food(ctx, scale, foodCoordinates);
             gameFoods.push(newFood);
         });
 
         // CREATE THE GAME STATE
-        const gameState = new GameState(unit, level.dimensions, level.delay, level.walls, gameSnakes, gameFoods);
+        const gameState = new GameState(level.dimensions, level.delay, level.walls, gameSnakes, gameFoods);
 
         // PREPARE CANVAS
-        resizeCanvas(canvas, gameState.dimensions[0] * unit, gameState.dimensions[1] * unit);
-
-        // LISTEN
-        const commandPalette = new CommandPalette("z", "d", "s", "q", document);
-        const commandPalette2 = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", document);
+        resizeCanvas(canvas, gameState.dimensions[0] * scale, gameState.dimensions[1] * scale);
 
         // LAUNCH
         var interval;
         var loopFunction = function () {
             interval = gameState.delay;
             clearCanvas(canvas, ctx);
-            draw(gameState, snake, food, commandPalette2);
+            update(gameState, commandPalettes);
             setTimeout(loopFunction, interval);
         }
         loopFunction();
@@ -57,13 +54,16 @@ function runGame(canvas, mode, levelNumber) {
 
 // FUNCTIONS
 /*------------------------------------------------------------------------------------------*/
-function draw(gameState, snake, food, commandPalette) {
-    // SNAKE
-    snake.setDirection(commandPalette.currentDirection);
-    snake.update();
-    snake.show();
+function update(gameState, commandPalettes) {
+    // SNAKES
+    gameSnakes = gameState.gameSnakes;
+    gameSnakes.forEach(snake => {
+        snake.setDirection(commandPalette.currentDirection);
+        snake.update();
+        snake.show();
+    });
 
-    // FOOD
+    // FOODS
     food.update();
     food.show();
 }
@@ -87,7 +87,7 @@ function clearCanvas(canvas, ctx) {
 
 
 /*------------------------------------------------------------------------------------------*/
-async function getLevelObject(mode, levelNumber) {
+function getLevelObject(mode, levelNumber) {
     // const response = await fetch(url);
     // const data = await response.json();
 

@@ -1,7 +1,7 @@
 class Food {
-    constructor(ctx, unit, coordinates) {
+    constructor(ctx, scale, coordinates) {
         this.ctx = ctx;
-        this.unit = unit;
+        this.scale = scale;
         this.coordinates = [...coordinates];
         this.color = "red";
     }
@@ -16,7 +16,7 @@ class Food {
 
     show() {
         this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(coordinates[0] * this.unit, coordinates[1] * this.unit, this.unit, this.unit);
+        this.ctx.fillRect(coordinates[0] * this.scale, coordinates[1] * this.scale, this.scale, this.scale);
     }
 }
 
