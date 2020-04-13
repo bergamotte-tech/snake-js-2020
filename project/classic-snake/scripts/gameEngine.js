@@ -1,6 +1,8 @@
 import Snake from "./classes/game/Snake.js";
 import Food from "./classes/game/Food.js";
-import GameState from "./classes/game/GameState.js";
+import Wall from "./classes/game/Wall.js";
+import GameSupervisor from "./classes/game/GameSupervisor.js";
+import Popup from "./classes/UI/Popup.js";
 
 /*------------------------------------------------------------------------------------------*/
 function runGame(canvas, mode, levelNumber) {
@@ -12,39 +14,21 @@ function runGame(canvas, mode, levelNumber) {
         const level = getLevelObject(mode, levelNumber);
 
         // CREATE ELEMENTS
-        /* SNAKES AND COMMANDS */
-        const snakesCoordinates = level.snakes;
-        const gameSnakes = [];
-        snakesCoordinates.forEach(snakeCoordinates => {
-            const commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", document);
-            const newSnake = new Snake(ctx, scale, snakeCoordinates, commandPalette);
-            i++;
-            newSnake.randomColor();
-            gameSnakes.push(newSnake);
-        });
-        /* FOODS */
-        const foodsCoordinates = level.foods;
-        const gameFoods = [];
-        foodsCoordinates.forEach(foodCoordinates => {
-            const newFood = new Food(ctx, scale, foodCoordinates);
-            gameFoods.push(newFood);
-        });
+        const gameSnakes = createSnakes(ctx, scale, level.snakes);
+        const gameFoods = createFoods(ctx, scale, level.foods);
+        const gameWalls = createWalls(ctx, scale, level.walls);
 
         // CREATE THE GAME STATE
-        const gameState = new GameState(level.dimensions, level.delay, level.walls, gameSnakes, gameFoods);
+        const gameSupervisor = new GameSupervisor(level.dimensions, level.delay, gameWalls, gameSnakes, gameFoods);
 
         // PREPARE CANVAS
-        resizeCanvas(canvas, gameState.dimensions[0] * scale, gameState.dimensions[1] * scale);
+        resizeCanvas(canvas, gameSupervisor.dimensions[0] * scale, gameSupervisor.dimensions[1] * scale);
+
+        // ASK FOR COMMANDS
+        promptCommandPalettes(gameSnakes);
 
         // LAUNCH
-        var interval;
-        var loopFunction = function () {
-            interval = gameState.delay;
-            clearCanvas(canvas, ctx);
-            update(gameState, commandPalettes);
-            setTimeout(loopFunction, interval);
-        }
-        loopFunction();
+        startLoop(canvas, ctx, gameSupervisor);
     }
     else console.error("Mode " + mode + " does not exist");
 }
@@ -53,19 +37,38 @@ function runGame(canvas, mode, levelNumber) {
 
 
 // FUNCTIONS
+
 /*------------------------------------------------------------------------------------------*/
-function update(gameState, commandPalettes) {
-    // SNAKES
-    gameSnakes = gameState.gameSnakes;
-    gameSnakes.forEach(snake => {
-        snake.setDirection(commandPalette.currentDirection);
+function startLoop(canvas, ctx, gameSupervisor) {
+    var interval;
+    var loopFunction = function () {
+        interval = gameSupervisor.delay;
+        clearCanvas(canvas, ctx);
+        refreshGame(gameSupervisor);
+        setTimeout(loopFunction, interval);
+    }
+    loopFunction();
+}
+/*------------------------------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------------------------*/
+function refreshGame(gameSupervisor) {
+    refreshSnakes(gameSupervisor);
+    refreshFoods(gameSupervisor);
+    refreshWalls(gameSupervisor);
+}
+function refreshSnakes(gameSupervisor) {
+    gameSupervisor.gameSnakes.forEach(snake => {
         snake.update();
         snake.show();
     });
-
-    // FOODS
-    food.update();
-    food.show();
+}
+function refreshFoods(gameSupervisor) {
+}
+function refreshWalls(gameSupervisor) {
+    gameSupervisor.gameWalls.forEach(wall => {
+        wall.show();
+    });
 }
 /*------------------------------------------------------------------------------------------*/
 
@@ -101,10 +104,62 @@ function getLevelObject(mode, levelNumber) {
             [10, 10], [14, 15]
         ],
         "snakes": [
-            [[60, 20], [60, 19], [60, 18]], [[70, 20], [70, 19], [70, 18]], [[50, 20], [50, 19], [50, 18]]
+            [[60, 20], [60, 19], [60, 18]], [[70, 20], [70, 19], [70, 18]]
         ]
     };
     return data;
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+/*------------------------------------------------------------------------------------------*/
+function createSnakes(ctx, scale, snakesCoordinates) {
+    const gameSnakes = [];
+    snakesCoordinates.forEach(snakeCoordinates => {
+        const newSnake = new Snake(ctx, scale, snakeCoordinates);
+        newSnake.randomColor();
+        gameSnakes.push(newSnake);
+    });
+    return gameSnakes;
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+/*------------------------------------------------------------------------------------------*/
+function createFoods(ctx, scale, foodsCoordinates) {
+    const gameFoods = [];
+    foodsCoordinates.forEach(foodCoordinates => {
+        const newFood = new Food(ctx, scale, foodCoordinates);
+        gameFoods.push(newFood);
+    });
+    return gameFoods;
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+/*------------------------------------------------------------------------------------------*/
+function createWalls(ctx, scale, wallsCoordinates) {
+    const gameWalls = [];
+    wallsCoordinates.forEach(wallCoordinates => {
+        const newWall = new Wall(ctx, scale, wallCoordinates);
+        gameWalls.push(newWall);
+    });
+    return gameWalls;
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+/*------------------------------------------------------------------------------------------*/
+function promptCommandPalettes(gameSnakes) {
+    gameSnakes.forEach(snake => {
+        const popup = new Popup("title", "msg");
+        const rs = popup.prompt("type in your commands Up Right Down Left");
+        const commands = rs.split(" "); // TODO fix is null when prompt does not block execution
+        console.log(commands);
+        console.log(snake);
+
+        snake.setCommandPalette(commands[0], commands[1], commands[2], commands[3]);
+    });
 }
 /*------------------------------------------------------------------------------------------*/
 

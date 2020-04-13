@@ -1,14 +1,18 @@
+import CommandPalette from "./CommandPalette.js";
+
 class Snake {
-  constructor(ctx, scale, body, commandPalette) {
+  constructor(ctx, scale, body) {
     this.ctx = ctx;
     this.scale = scale;
     this.body = body.map(([x, y]) => [x, y]);
-    this.commandPalette = commandPalette;
 
     this.xdir = 0;
     this.ydir = 0;
     this.color = "white";
-    this.availableColors = ["blue", "white", "yellow", "green", "pink"];
+    this.availableColors = ["blue", "white", "yellow", "green", "pink",
+      "purple", "cyan", "aquablue", "gray", "orange"];
+
+    this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", document);
   }
 
   setDirection(direction) {
@@ -17,6 +21,7 @@ class Snake {
   }
 
   update() {
+    this.setDirection(this.commandPalette.currentDirection);
     const oldHead = this.body[this.body.length - 1];
     const newHead = [
       oldHead[0] + this.xdir,
@@ -41,7 +46,7 @@ class Snake {
   }
 
   setCommandPalette(upKey, rightKey, downKey, leftKey) {
-    this.commandPalette.changeCommands(upKey, rightKey, downKey, leftKey)
+    this.commandPalette.changeCommands(upKey, rightKey, downKey, leftKey);
   }
 }
 

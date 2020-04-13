@@ -3,11 +3,11 @@ const SNAKE = 10;
 const FOOD = 20;
 const WALL = 30;
 
-class GameState {
-    constructor(dimensions, delay, wallsLocations, gameSnakes, gameFoods) {
+class GameSupervisor {
+    constructor(dimensions, delay, gameWalls, gameSnakes, gameFoods) {
         this.dimensions = [...dimensions];
         this.delay = delay;
-        this.wallsLocations = wallsLocations.map(([x, y]) => [x, y]);
+        this.gameWalls = [...gameWalls];
         this.gameSnakes = [...gameSnakes];
         this.gameFoods = [...gameFoods];
 
@@ -31,4 +31,4 @@ class GameState {
 
 }
 
-export { GameState as default };
+export { GameSupervisor as default };
