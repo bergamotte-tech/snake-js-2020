@@ -1,4 +1,4 @@
-import initGame from './game.js';
+import runGame from './gameEngine.js';
 
 
 window.addEventListener("load", function () {
@@ -93,7 +93,7 @@ window.addEventListener("load", function () {
             // TURN ON GAME DIV
             divInGame.style.display = "flex";
             // RUN GAME (ALSO DISPLAYS CANVAS)
-            initGame(canvas, "solo", levelNumber);
+            runGame(canvas, "solo", levelNumber);
         }
         else {
             // SET PAGE TITLE
@@ -120,7 +120,7 @@ window.addEventListener("load", function () {
             // CLEAR PAGE
             clearDynamicContent();
             // RUN GAME
-            initGame(canvas, "multi", levelNumber);
+            runGame(canvas, "multi", levelNumber);
         }
         else {
             // SET PAGE TITLE
