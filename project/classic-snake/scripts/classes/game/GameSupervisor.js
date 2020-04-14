@@ -36,15 +36,15 @@ class GameSupervisor {
    * @param {array} gameSnakes
    * @description Check if wall collision
    */
-  wallCollision(gameWalls, gameSnakes) {
-    gameSnakes.forEach((snake) => {
-      gameWalls.forEach((wall) => {
-        wall.coordinates.forEach((coord) => {
-          if (coord[0] === snake.xdir && coord[1] === snake.ydir) {
-            snake.die();
-            console.log(`${snake.color} snake is dead`);
-          }
-        });
+  wallCollision() {
+    this.gameSnakes.forEach((snake) => {
+      this.gameWalls.forEach((wall) => {
+        if (
+          wall.coordinates[0] === snake.body.slice(-1)[0][0] &&
+          wall.coordinates[1] === snake.body.slice(-1)[0][1]
+        ) {
+          snake.die();
+        }
       });
     });
   }
@@ -53,26 +53,29 @@ class GameSupervisor {
     let res = EMPTY;
     let found = false;
     if (!found) {
-      this.gameWalls.forEach(wall => {
+      this.gameWalls.forEach((wall) => {
         if (wall.coordinates[0] === x && wall.coordinates[1] === y) {
-          res = WALL; found = true;
+          res = WALL;
+          found = true;
         }
       });
     }
 
     if (!found) {
-      this.gameFoods.forEach(food => {
+      this.gameFoods.forEach((food) => {
         if (food.coordinates[0] === x && food.coordinates[1] === y) {
-          res = FOOD; found = true;
+          res = FOOD;
+          found = true;
         }
       });
     }
 
     if (!found) {
-      this.gameSnakes.forEach(snake => {
-        snake.body.forEach(coordinates => {
+      this.gameSnakes.forEach((snake) => {
+        snake.body.forEach((coordinates) => {
           if (coordinates[0] === x && coordinates[1] === y) {
-            res = SNAKE; found = true;
+            res = SNAKE;
+            found = true;
           }
         });
       });

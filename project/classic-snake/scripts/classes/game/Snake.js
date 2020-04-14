@@ -9,10 +9,26 @@ class Snake {
     this.xdir = 0;
     this.ydir = 0;
     this.color = "white";
-    this.availableColors = ["blue", "white", "yellow", "green", "pink",
-      "purple", "cyan", "aquablue", "gray", "orange"];
+    this.availableColors = [
+      "blue",
+      "white",
+      "yellow",
+      "green",
+      "pink",
+      "purple",
+      "cyan",
+      "aquablue",
+      "gray",
+      "orange",
+    ];
 
-    this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", document);
+    this.commandPalette = new CommandPalette(
+      "ArrowUp",
+      "ArrowRight",
+      "ArrowDown",
+      "ArrowLeft",
+      document
+    );
   }
 
   setDirection(direction) {
@@ -23,10 +39,7 @@ class Snake {
   update() {
     this.setDirection(this.commandPalette.currentDirection);
     const oldHead = this.body[this.body.length - 1];
-    const newHead = [
-      oldHead[0] + this.xdir,
-      oldHead[1] + this.ydir
-    ];
+    const newHead = [oldHead[0] + this.xdir, oldHead[1] + this.ydir];
     this.body.push(newHead);
     this.body.shift();
   }
@@ -35,9 +48,19 @@ class Snake {
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = "grey";
 
-    this.body.forEach(coordinates => {
-      this.ctx.fillRect(coordinates[0] * this.scale, coordinates[1] * this.scale, this.scale, this.scale);
-      this.ctx.strokeRect(coordinates[0] * this.scale, coordinates[1] * this.scale, this.scale, this.scale);
+    this.body.forEach((coordinates) => {
+      this.ctx.fillRect(
+        coordinates[0] * this.scale,
+        coordinates[1] * this.scale,
+        this.scale,
+        this.scale
+      );
+      this.ctx.strokeRect(
+        coordinates[0] * this.scale,
+        coordinates[1] * this.scale,
+        this.scale,
+        this.scale
+      );
     });
   }
 
@@ -47,6 +70,10 @@ class Snake {
 
   setCommandPalette(upKey, rightKey, downKey, leftKey) {
     this.commandPalette.changeCommands(upKey, rightKey, downKey, leftKey);
+  }
+
+  die() {
+    console.log(`${this.color} snake is dead`);
   }
 }
 
