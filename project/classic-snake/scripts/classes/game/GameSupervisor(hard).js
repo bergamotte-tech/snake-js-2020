@@ -1,3 +1,11 @@
+/* 
+
+THIS MORE OPTIMISED VERSION IS UNFINISHED :
+INSTEAD OF UPDATING THE WHOLE GRID, IT SHOULD ONLY UPDATE WHAT HAS BEEN CHANGED
+
+*/
+
+
 const SNAKE = 10;
 const FOOD = 20;
 const WALL = 30;
@@ -20,27 +28,26 @@ class GameSupervisor {
 
     this.columns = this.dimensions[0];
     this.rows = this.dimensions[1];
-    this.grid = this.initGrid(this.rows, this.columns);
+    this.world = this.initWorld(this.rows, this.columns);
   }
 
-  initGrid(rows, columns) {
-    let tempGrid = [];
+  initWorld(rows, columns) {
+    let tempWorld = [];
     for (let i = 0; i < rows; i++) {
       const line = [];
       for (let j = 0; j < columns; j++) {
         const elementsHere = this.initCell(j, i); //i is row (y axis), j is column (x axis)
         line[j] = elementsHere;
       }
-      tempGrid[i] = line;
+      tempWorld[i] = line;
     }
-    return tempGrid;
+    return tempWorld;
   }
 
   /*------------------------------------------------------------------------------------------*/
   refreshGame() {
     this.moveSnakes();
     this.handleEvents();
-    this.updateGrid();
     this.showGame();
   }
   /*------------------------------------------------------------------------------------------*/
@@ -58,6 +65,7 @@ class GameSupervisor {
       // ADD "SNAKE" WHERE THE NEW HEAD IS
       const snakeHead = snake.getHead();
       this.addElementToCell(snakeHead[0], snakeHead[1], [SNAKE, snake.getId()]);
+      // MOVE
     });
   }
   /*------------------------------------------------------------------------------------------*/
@@ -65,6 +73,8 @@ class GameSupervisor {
 
   /*------------------------------------------------------------------------------------------*/
   handleEvents() {
+    // console.log(JSON.parse(JSON.stringify(this.world[10][10])));
+
     this.gameSnakes.forEach(snake => {
       const headCoordinates = snake.getHead();
       const elementsHere = this.getCellElements(headCoordinates[0], headCoordinates[1]);
@@ -76,20 +86,20 @@ class GameSupervisor {
           case WALL:
             console.log("wall encountered");
             break;
-
           case SNAKE:
             if (snake.getId() != elementId) {
               console.log("other snake encountered");
             }
             break;
-
           case FOOD:
             console.log("food encountered");
+            // grow snake by food value
             snake.grow(1);
-            // food.respawn()
+            // update grid
+            // respawn food
+            // accelerate pace
             if (this.delay > 40) this.delay -= 10;
             break;
-
           default:
             break;
         }
@@ -115,32 +125,27 @@ class GameSupervisor {
   /*------------------------------------------------------------------------------------------*/
 
 
-  /*------------------------------------------------------------------------------------------*/
-  updateGrid() {
-    this.grid = this.initGrid(this.rows, this.columns);
-  }
-  /*------------------------------------------------------------------------------------------*/
-
-
   // FUNCTIONS
   /*------------------------------------------------------------------------------------------*/
+  // only used for initialisation
   initCell(x, y) {
     let elementsHere = [];
+    let foundSomething = false;
 
     this.gameWalls.forEach(wall => {
       if (wall.coordinates[0] === x && wall.coordinates[1] === y) {
-        elementsHere.push([WALL, wall.id]);
+        elementsHere.push([WALL, wall.id]); foundSomething = true;
       }
     });
     this.gameFoods.forEach(food => {
       if (food.coordinates[0] === x && food.coordinates[1] === y) {
-        elementsHere.push([FOOD, food.id]);
+        elementsHere.push([FOOD, food.id]); foundSomething = true;
       }
     });
     this.gameSnakes.forEach(snake => {
       snake.body.forEach(coordinates => {
         if (coordinates[0] === x && coordinates[1] === y) {
-          elementsHere.push([SNAKE, snake.id]);
+          elementsHere.push([SNAKE, snake.id]); foundSomething = true;
         }
       });
     });
@@ -148,7 +153,7 @@ class GameSupervisor {
   }
 
   getCellElements(x, y) {
-    return this.grid[y][x]; //1st is row (y axis), 2nd is column (x axis)
+    return this.world[y][x]; //1st is row (y axis), 2nd is column (x axis)
   }
   /*------------------------------------------------------------------------------------------*/
 
@@ -164,7 +169,7 @@ class GameSupervisor {
   }
 
   addElementToCell(x, y, element) {
-    this.grid[y][x].push(element);
+    this.world[y][x].push(element);
   }
   /*------------------------------------------------------------------------------------------*/
 }
