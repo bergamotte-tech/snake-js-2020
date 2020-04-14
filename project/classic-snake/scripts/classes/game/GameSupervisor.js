@@ -74,17 +74,19 @@ class GameSupervisor {
         const elementId = element[1];
         switch (elementCode) {
           case WALL:
-            console.log("wall encountered");
+            console.log("wall encountered by snake n° " + snake.getId());
+            snake.die();
+            this.removeGameSnake(snake.getId());
             break;
 
           case SNAKE:
             if (snake.getId() != elementId) {
-              console.log("other snake encountered");
+              console.log("other snake encountered by snake n° " + snake.getId());
             }
             break;
 
           case FOOD:
-            console.log("food encountered");
+            console.log("food encountered by snake n° " + snake.getId());
             snake.grow(1);
             // food.respawn()
             if (this.delay > 40) this.delay -= 10;
@@ -167,6 +169,22 @@ class GameSupervisor {
     this.grid[y][x].push(element);
   }
   /*------------------------------------------------------------------------------------------*/
+
+
+  /*------------------------------------------------------------------------------------------*/
+  removeGameSnake(id) {
+    for (let index = 0; index < this.gameSnakes.length; index++) {
+      const snake = this.gameSnakes[index];
+      if (snake.getId() == id) {
+        this.gameSnakes.splice(index);
+        index = this.gameSnakes.length;
+      }
+    }
+  }
+
+  /*------------------------------------------------------------------------------------------*/
+
+
 }
 
 export { GameSupervisor as default };

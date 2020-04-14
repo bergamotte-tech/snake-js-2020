@@ -16,27 +16,23 @@ class Food {
     }
 
     getRandomValue() {
-        const values = [-2, -1, 1, 2];
+        const values = [1, 2];
         return values[Math.floor(Math.random() * values.length)];
     }
 
     setColorByValue(value) {
+        let color;
         switch (value) {
-            case -2:
-                this.color = "red"
-                break;
-            case -1:
-                this.color = "orange"
-                break;
             case 1:
-                this.color = "green"
+                color = "green"
                 break;
             case 2:
-                this.color = "yellow"
+                color = "yellow"
                 break;
             default:
-                this.color = "gray"
+                color = "white"
         }
+        return color;
     }
 
     // FOR SUPERVISOR
