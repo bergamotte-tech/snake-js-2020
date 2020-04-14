@@ -28,10 +28,7 @@ class Snake {
   move() {
     this.setDirection(this.commandPalette.currentDirection);
     const oldHead = this.body[this.body.length - 1];
-    const newHead = [
-      oldHead[0] + this.xdir,
-      oldHead[1] + this.ydir
-    ];
+    const newHead = [oldHead[0] + this.xdir, oldHead[1] + this.ydir];
     this.body.push(newHead);
     this.body.shift();
   }
@@ -40,9 +37,19 @@ class Snake {
     this.ctx.fillStyle = this.color;
     this.ctx.strokeStyle = "grey";
 
-    this.body.forEach(coordinates => {
-      this.ctx.fillRect(coordinates[0] * this.scale, coordinates[1] * this.scale, this.scale, this.scale);
-      this.ctx.strokeRect(coordinates[0] * this.scale, coordinates[1] * this.scale, this.scale, this.scale);
+    this.body.forEach((coordinates) => {
+      this.ctx.fillRect(
+        coordinates[0] * this.scale,
+        coordinates[1] * this.scale,
+        this.scale,
+        this.scale
+      );
+      this.ctx.strokeRect(
+        coordinates[0] * this.scale,
+        coordinates[1] * this.scale,
+        this.scale,
+        this.scale
+      );
     });
   }
 
