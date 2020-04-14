@@ -1,0 +1,17 @@
+[
+  {
+    "walls": "magenta",
+    "snakes": [
+      "blue",
+      "white",
+      "yellow",
+      "green",
+      "pink",
+      "purple",
+      "cyan",
+      "aquablue",
+      "gray",
+      "orange"
+    ]
+  }
+]

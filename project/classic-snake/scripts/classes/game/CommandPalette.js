@@ -5,7 +5,7 @@ class CommandPalette {
         this.down = downKey;
         this.left = leftKey;
 
-        this.currentDirection = [0, -1];
+        this.currentDirection = [0, 0];
         subscriber.addEventListener('keydown', e => this.checkKey(e))
     }
 

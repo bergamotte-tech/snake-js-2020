@@ -43,8 +43,8 @@ async function runGame(canvas, mode, levelNumber) {
 }
 /*------------------------------------------------------------------------------------------*/
 
-// FUNCTIONS
 
+// FUNCTIONS
 /*------------------------------------------------------------------------------------------*/
 function startLoop(canvas, ctx, gameSupervisor) {
     var interval;
@@ -60,21 +60,7 @@ function startLoop(canvas, ctx, gameSupervisor) {
 
 /*------------------------------------------------------------------------------------------*/
 function refreshGame(gameSupervisor) {
-    refreshSnakes(gameSupervisor);
-    refreshFoods(gameSupervisor);
-    refreshWalls(gameSupervisor);
-}
-function refreshSnakes(gameSupervisor) {
-    gameSupervisor.gameSnakes.forEach((snake) => {
-        snake.update();
-        snake.show();
-    });
-}
-function refreshFoods(gameSupervisor) { }
-function refreshWalls(gameSupervisor) {
-    gameSupervisor.gameWalls.forEach((wall) => {
-        wall.show();
-    });
+    gameSupervisor.refreshGame();
 }
 /*------------------------------------------------------------------------------------------*/
 
@@ -113,7 +99,7 @@ function createSnakes(ctx, scale, snakesCoordinates) {
     const gameSnakes = [];
     snakesCoordinates.forEach((snakeCoordinates) => {
         const newSnake = new Snake(ctx, scale, snakeCoordinates);
-        newSnake.randomColor();
+        newSnake.setRandomColor();
         gameSnakes.push(newSnake);
     });
     return gameSnakes;
