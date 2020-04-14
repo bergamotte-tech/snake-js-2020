@@ -8,10 +8,15 @@ class Snake {
     this.ctx = ctx;
     this.scale = scale;
     this.body = body.map(([x, y]) => [x, y]);
-    this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", document);
-    this.setPaletteInitialDirection();
     this.xdir = 0;
     this.ydir = 0;
+
+    this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"); //associates keys to a direction
+    this.setInitialDirection();
+    document.addEventListener('keydown', e => {
+      this.commandPalette.checkKey(e);
+      this.setDirection(this.commandPalette.currentDirection);
+    });
 
     this.color = "white";
     this.availableColors = ["blue", "white", "yellow", "green", "pink",
@@ -26,7 +31,6 @@ class Snake {
   // FOR SUPERVISOR
   /*------------------------------------------------------------------------------------------*/
   move() {
-    this.setDirection(this.commandPalette.currentDirection);
     const oldHead = this.body[this.body.length - 1];
     const newHead = [oldHead[0] + this.xdir, oldHead[1] + this.ydir];
     this.body.push(newHead);
@@ -70,19 +74,28 @@ class Snake {
     this.commandPalette.changeCommands(upKey, rightKey, downKey, leftKey);
   }
 
-  setPaletteInitialDirection() {
+  setInitialDirection() {
     if (this.body.length > 1) {
-      if (this.body[this.body.length - 1][1] > this.body[this.body.length - 2][1]) {
+      const head = this.getHead();
+      const preHead = this.body[this.body.length - 2];
+
+      if (head[1] > preHead[1]) {
         this.commandPalette.setCurrentDirection([0, 1]); //down
       }
-      else if (this.body[this.body.length - 1][1] < this.body[this.body.length - 2][1]) {
+      else if (head[1] < preHead[1]) {
         this.commandPalette.setCurrentDirection([0, -1]); //up
       }
-      else if (this.body[this.body.length - 1][0] < this.body[this.body.length - 2][0]) {
+      else if (head[0] < preHead[0]) {
         this.commandPalette.setCurrentDirection([-1, 0]); //left
       }
+      else {
+        this.commandPalette.setCurrentDirection([1, 0]); //right
+      }
     }
-    else this.commandPalette.setCurrentDirection([1, 0]); //right
+    else {
+      this.commandPalette.setCurrentDirection([1, 0]); //right
+    }
+    this.setDirection(this.commandPalette.currentDirection);
   }
 
   setRandomColor() {
@@ -94,7 +107,7 @@ class Snake {
   // GETTERS
   /*------------------------------------------------------------------------------------------*/
   getBody() {
-    return this.body;
+    return this.body.map(([x, y]) => [x, y]);
   }
   getHead() {
     return this.body[this.body.length - 1];

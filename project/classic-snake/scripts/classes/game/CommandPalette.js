@@ -1,12 +1,11 @@
 class CommandPalette {
-    constructor(upKey, rightKey, downKey, leftKey, subscriber) {
+    constructor(upKey, rightKey, downKey, leftKey) {
         this.up = upKey;
         this.right = rightKey;
         this.down = downKey;
         this.left = leftKey;
 
         this.currentDirection = [0, 0];
-        subscriber.addEventListener('keydown', e => this.checkKey(e))
     }
 
     checkKey(e) {

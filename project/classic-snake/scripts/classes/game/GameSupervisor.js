@@ -40,42 +40,17 @@ class GameSupervisor {
   refreshGame() {
     this.moveSnakes();
     this.handleEvents();
-    // this.updateWorld();
     this.showGame();
-
-    /**
-     * update :
-     *  reprendre toutes les coord des snakes, les mettre à EMPTY
-     *  les snakes move() -> ils bougent
-     * 
-     * events :
-     *   regarder toutes les coordonnées(x,y) des têtes des snakes:
-            const elements = this.initCell(x,y);
-     *      if checkSnakeFoodCollision(elements) forEachSnake getSnakeById(id).grow()
-     *      if checkSnakeSnakeCollision(elements) nothing
-     *      if checkSnakeWallCollision(elements) forEachSnake getSnakeById(id).grow()
-     *    
-     *  prendre les nouv coord des snakes restants, les mettre à SNAKE
-     * 
-     * 
-     * show
-     *  
-     */
   }
 
   moveSnakes() {
     this.gameSnakes.forEach(snake => {
-      // REMOVE ITSELF FROM THE WORLD
-      // snake.getBody().forEach(coordinates => {
-      //   // // console.log("BEFORE");
-      //   // // console.log(this.getCellElements(coordinates[0], coordinates[1]));
-
-      //   // this.removeElementFromCell(coordinates[0], coordinates[1], snake.getId());
-
-      //   // // console.log("AFTER");
-      //   // // console.log(this.getCellElements(coordinates[0], coordinates[1]));
-      // });
-
+      // REMOVE "SNAKE" WHERE THE SNAKE IS NO MORE
+      const snakeBody = snake.getBody();
+      this.removeElementFromCell(snakeBody[0][0], snakeBody[0][1], snake.getId());
+      // ADD "SNAKE" WHERE THE NEW HEAD IS
+      const snakeHead = snake.getHead();
+      this.addElementToCell(snakeHead[0], snakeHead[1], [SNAKE, snake.getId()]);
       // MOVE
       snake.move();
     });
@@ -87,14 +62,16 @@ class GameSupervisor {
       const elementsHere = this.getCellElements(headCoordinates[0], headCoordinates[1]);
 
       elementsHere.forEach(element => {
-        const code = element[0];
-        const id = element[1];
-        switch (code) {
+        const elementCode = element[0];
+        const elementId = element[1];
+        switch (elementCode) {
           case WALL:
             console.log("wall encountered");
             break;
           case SNAKE:
-            console.log("snake encountered");
+            if (snake.getId() != elementId) {
+              console.log("other snake encountered");
+            }
             break;
           case FOOD:
             console.log("food encountered");
@@ -165,6 +142,10 @@ class GameSupervisor {
         elementsHere.splice(index);
       }
     }
+  }
+
+  addElementToCell(x, y, element) {
+    this.world[y][x].push(element);
   }
   /*------------------------------------------------------------------------------------------*/
 }
