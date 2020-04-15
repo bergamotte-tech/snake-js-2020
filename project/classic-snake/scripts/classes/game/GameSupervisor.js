@@ -1,3 +1,5 @@
+import Food from "./Food.js";
+
 const SNAKE = 10;
 const FOOD = 20;
 const WALL = 30;
@@ -26,12 +28,12 @@ class GameSupervisor {
   initGrid(rows, columns) {
     let tempGrid = [];
     for (let i = 0; i < rows; i++) {
-      const line = [];
+      const row = [];
       for (let j = 0; j < columns; j++) {
         const elementsHere = this.initCell(j, i); //i is row (y axis), j is column (x axis)
-        line[j] = elementsHere;
+        row[j] = elementsHere;
       }
-      tempGrid[i] = line;
+      tempGrid[i] = row;
     }
     return tempGrid;
   }
@@ -51,13 +53,19 @@ class GameSupervisor {
     this.gameSnakes.forEach(snake => {
       // REMOVE OLD TAIL FROM GRID
       const snakeTail = snake.getBody()[0];
-      this.removeElementFromCell(snakeTail[0], snakeTail[1], snake.getId());
+      this.removeElementInCell(snakeTail[0], snakeTail[1], snake.getId());
 
       snake.move();
 
       // ADD "SNAKE" WHERE THE NEW HEAD IS
-      const snakeHead = snake.getHead();
-      this.addElementToCell(snakeHead[0], snakeHead[1], [SNAKE, snake.getId()]);
+      const snakeHead = snake.getHead(); const x = snakeHead[0]; const y = snakeHead[1];
+      if (x < 0 || x >= this.grid[0].length || y < 0 || y >= this.grid.length) { // out of borders
+        snake.die();
+        this.removeGameSnake(snake.getId());
+      }
+      else {
+        this.addElementInCell(x, y, [SNAKE, snake.getId()]);
+      }
     });
   }
   /*------------------------------------------------------------------------------------------*/
@@ -67,42 +75,45 @@ class GameSupervisor {
   handleEvents() {
     this.gameSnakes.forEach(snake => {
       const headCoordinates = snake.getHead();
-      const elementsHere = this.getCellElements(headCoordinates[0], headCoordinates[1]);
+      const x = headCoordinates[0];
+      const y = headCoordinates[1];
+      const elementsInContact = this.getElementsInCell(x, y);
+      let selfEncounter = 0; // if the snake bites itself
 
-      let selfEncounter = 0; // if the snake bites itself, selfEncounter will be = 2
-
-      elementsHere.forEach(element => {
+      elementsInContact.forEach(element => {
         const elementCode = element[0];
         const elementId = element[1];
 
         switch (elementCode) {
+          //_____________________________________________________________________
           case WALL:
-            console.log("wall encountered by snake n° " + snake.getId());
             snake.die();
             this.removeGameSnake(snake.getId());
             break;
+          //_____________________________________________________________________
 
+          //_____________________________________________________________________
           case SNAKE:
             if (snake.getId() != elementId) {
               console.log("other snake encountered by snake n° " + snake.getId());
             }
-            // else {
-            //   if (selfEncounter < 1) {
-            //     selfEncounter++;
-            //   }
-            //   else { // bites itself
-            //     snake.die();
-            //     this.removeGameSnake(snake.getId());
-            //   }
-            // }
+            else {
+              selfEncounter++;
+              if (selfEncounter > 1) { //bites itself
+                snake.die();
+                this.removeGameSnake(snake.getId());
+              }
+            }
             break;
+          //_____________________________________________________________________
 
+          //_____________________________________________________________________
           case FOOD:
-            console.log("food encountered by snake n° " + snake.getId());
             snake.grow(1);
-            // food.respawn()
             if (this.delay > 40) this.delay -= 10;
+            this.respawnFood(elementId);
             break;
+          //_____________________________________________________________________
 
           default:
             break;
@@ -160,15 +171,15 @@ class GameSupervisor {
     });
     return elementsHere;
   }
+  /*------------------------------------------------------------------------------------------*/
 
-  getCellElements(x, y) {
+  /*------------------------------------------------------------------------------------------*/
+  getElementsInCell(x, y) {
     return this.grid[y][x]; //1st is row (y axis), 2nd is column (x axis)
   }
-  /*------------------------------------------------------------------------------------------*/
 
-  /*------------------------------------------------------------------------------------------*/
-  removeElementFromCell(x, y, id) {
-    const elementsHere = this.getCellElements(x, y);
+  removeElementInCell(x, y, id) {
+    const elementsHere = this.getElementsInCell(x, y);
     for (let index = 0; index < elementsHere.length; index++) {
       const element = elementsHere[index];
       if (element[1] === id) {
@@ -177,8 +188,35 @@ class GameSupervisor {
     }
   }
 
-  addElementToCell(x, y, element) {
+  // getElementInCell(x, y, id) {
+  //   const result;
+  //   const elementsHere = this.getElementsInCell(x, y);
+  //   for (let index = 0; index < elementsHere.length; index++) {
+  //     const element = elementsHere[index];
+  //     if (element[1] === id) {
+  //       result = element;
+  //       index = elementsHere.length;
+  //     }
+  //   }
+  //   return result;
+  // }
+
+  addElementInCell(x, y, element) {
     this.grid[y][x].push(element);
+  }
+
+  getRandomEmptyCoordinates() {
+    const emptyCells = [];
+    for (let i = 0; i < this.grid.length; i++) {
+      const row = this.grid[i];
+      for (let j = 0; j < row.length; j++) {
+        const elementsHere = this.grid[i][j];
+        if (elementsHere.length < 1) emptyCells.push([i, j]);
+      }
+    }
+
+    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+    return randomCell;
   }
   /*------------------------------------------------------------------------------------------*/
 
@@ -195,6 +233,22 @@ class GameSupervisor {
     }
   }
 
+  respawnFood(id) {
+    // GET FOOD BY ID
+    let food;
+    for (let index = 0; index < this.gameFoods.length; index++) {
+      food = this.gameFoods[index];
+      if (food.getId() === id) {
+        index = this.gameFoods.length;
+      }
+    }
+
+    // FIND EMPTY CELL
+    const coordinates = this.getRandomEmptyCoordinates();
+
+    // RESPAWN IT
+    food.respawn([coordinates[1], coordinates[0]]);
+  }
   /*------------------------------------------------------------------------------------------*/
 
 

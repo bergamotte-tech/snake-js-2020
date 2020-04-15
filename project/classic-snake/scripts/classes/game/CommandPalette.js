@@ -10,16 +10,16 @@ class CommandPalette {
 
     checkKey(e) {
         const pressedKey = e.key;
-        if (pressedKey === this.up) {
+        if (pressedKey === this.up && (this.currentDirection[1] != 1)) { //if up and was not going down
             this.setCurrentDirection([0, -1]);
         }
-        else if (pressedKey === this.right) {
+        else if (pressedKey === this.right && (this.currentDirection[0] != -1)) {
             this.setCurrentDirection([1, 0]);
         }
-        else if (pressedKey === this.down) {
+        else if (pressedKey === this.down && (this.currentDirection[1] != -1)) {
             this.setCurrentDirection([0, 1]);
         }
-        else if (pressedKey === this.left) {
+        else if (pressedKey === this.left && (this.currentDirection[0] != 1)) {
             this.setCurrentDirection([-1, 0]);
         }
     }
