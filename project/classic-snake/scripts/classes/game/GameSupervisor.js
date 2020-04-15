@@ -69,9 +69,12 @@ class GameSupervisor {
       const headCoordinates = snake.getHead();
       const elementsHere = this.getCellElements(headCoordinates[0], headCoordinates[1]);
 
+      let selfEncounter = 0; // if the snake bites itself, selfEncounter will be = 2
+
       elementsHere.forEach(element => {
         const elementCode = element[0];
         const elementId = element[1];
+
         switch (elementCode) {
           case WALL:
             console.log("wall encountered by snake n° " + snake.getId());
@@ -83,6 +86,15 @@ class GameSupervisor {
             if (snake.getId() != elementId) {
               console.log("other snake encountered by snake n° " + snake.getId());
             }
+            // else {
+            //   if (selfEncounter < 1) {
+            //     selfEncounter++;
+            //   }
+            //   else { // bites itself
+            //     snake.die();
+            //     this.removeGameSnake(snake.getId());
+            //   }
+            // }
             break;
 
           case FOOD:
@@ -175,9 +187,10 @@ class GameSupervisor {
   removeGameSnake(id) {
     for (let index = 0; index < this.gameSnakes.length; index++) {
       const snake = this.gameSnakes[index];
-      if (snake.getId() == id) {
-        this.gameSnakes.splice(index);
-        index = this.gameSnakes.length;
+      if (snake.getId() === id) {
+        const del = this.gameSnakes.splice(index, 1);
+        // console.log("snake " + id + " removed");
+        // console.log(JSON.parse(JSON.stringify(this.gameSnakes)));
       }
     }
   }

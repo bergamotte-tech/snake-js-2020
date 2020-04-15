@@ -18,14 +18,33 @@ class Snake {
       this.setDirection(this.commandPalette.currentDirection);
     });
 
-    this.color = "white";
-    this.availableColors = ["blue", "white", "yellow", "green", "pink",
-      "purple", "cyan", "aquablue", "gray", "orange"];
+    this.team = this.getRandomValue();
+    this.color = this.setColorByValue(this.team);
   }
 
   static generateId() {
     this.count++;
     return this.count;
+  }
+
+  getRandomValue() {
+    const values = [1, 2];
+    return values[Math.floor(Math.random() * values.length)];
+  }
+
+  setColorByValue(value) {
+    let color;
+    switch (value) {
+      case 1:
+        color = "green"
+        break;
+      case 2:
+        color = "yellow"
+        break;
+      default:
+        color = "white"
+    }
+    return color;
   }
 
   // FOR SUPERVISOR
@@ -128,10 +147,6 @@ class Snake {
       this.commandPalette.setCurrentDirection([1, 0]); //right
     }
     this.setDirection(this.commandPalette.currentDirection);
-  }
-
-  setRandomColor() {
-    this.color = this.availableColors[Math.floor(Math.random() * this.availableColors.length)];
   }
   /*------------------------------------------------------------------------------------------*/
 

@@ -99,7 +99,6 @@ function createSnakes(ctx, scale, snakesCoordinates) {
   const gameSnakes = [];
   snakesCoordinates.forEach((snakeCoordinates) => {
     const newSnake = new Snake(ctx, scale, snakeCoordinates);
-    newSnake.setRandomColor();
     gameSnakes.push(newSnake);
   });
   return gameSnakes;
