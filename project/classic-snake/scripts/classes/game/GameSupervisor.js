@@ -52,40 +52,48 @@ class GameSupervisor {
   /*------------------------------------------------------------------------------------------*/
   moveSnakes() {
     this.gameSnakes.forEach(snake => {
-      // REMOVE OLD TAIL FROM GRID
-      const snakeTail = snake.getBody()[0];
-      this.removeElementInCell(snakeTail[0], snakeTail[1], snake.getId());
-
-      snake.move();
-
-      // ADD "SNAKE" WHERE THE NEW HEAD IS
-      const snakeHead = snake.getHead(); const x = snakeHead[0]; const y = snakeHead[1];
-
-      if (this.hasBorders) {
-        if (x < 0 || x >= this.grid[0].length || y < 0 || y >= this.grid.length) {
-          snake.die();
-          this.removeGameSnake(snake.getId());
-        }
-        else {
-          this.addElementInCell(x, y, [SNAKE, snake.getId()]);
-        }
+      // CHECK IF NOT DEAD BY POISON
+      if (snake.getBody().length < 1) {
+        snake.die();
+        this.removeGameSnake(snake.getId());
       }
 
       else {
-        if (x < 0) {
-          snakeHead[0] = this.grid[0].length - 1;
-        }
-        else if (x >= this.grid[0].length) {
-          snakeHead[0] = 0;
-        }
-        else if (y < 0) {
-          snakeHead[1] = this.grid.length - 1;
-        }
-        else if (y >= this.grid.length) {
-          snakeHead[1] = 0;
+        // REMOVE OLD TAIL FROM GRID
+        const snakeTail = snake.getBody()[0];
+        this.removeElementInCell(snakeTail[0], snakeTail[1], snake.getId());
+
+        snake.move();
+
+        // ADD "SNAKE" WHERE THE NEW HEAD IS
+        const snakeHead = snake.getHead(); const x = snakeHead[0]; const y = snakeHead[1];
+
+        if (this.hasBorders) {
+          if (x < 0 || x >= this.grid[0].length || y < 0 || y >= this.grid.length) {
+            snake.die();
+            this.removeGameSnake(snake.getId());
+          }
+          else {
+            this.addElementInCell(x, y, [SNAKE, snake.getId()]);
+          }
         }
 
-        this.addElementInCell(snakeHead[0], snakeHead[1], [SNAKE, snake.getId()]);
+        else {
+          if (x < 0) {
+            snakeHead[0] = this.grid[0].length - 1;
+          }
+          else if (x >= this.grid[0].length) {
+            snakeHead[0] = 0;
+          }
+          else if (y < 0) {
+            snakeHead[1] = this.grid.length - 1;
+          }
+          else if (y >= this.grid.length) {
+            snakeHead[1] = 0;
+          }
+
+          this.addElementInCell(snakeHead[0], snakeHead[1], [SNAKE, snake.getId()]);
+        }
       }
     });
   }
@@ -283,7 +291,6 @@ class GameSupervisor {
     console.log(JSON.parse(JSON.stringify(this.gameFoods)));
   }
   /*------------------------------------------------------------------------------------------*/
-
 
 }
 

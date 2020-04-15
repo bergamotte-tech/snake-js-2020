@@ -6,8 +6,10 @@ class Food {
         this.ctx = ctx;
         this.scale = scale;
         this.coordinates = [...coordinates];
-        this.value = this.getRandomValue();
-        this.color = this.setColorByValue(this.value);
+
+        this.rarity = this.getRandomRarity();
+        this.value = this.setValueByRarity(this.rarity);
+        this.color = this.setColorByRarity(this.rarity);
     }
 
     static generateId() {
@@ -15,22 +17,64 @@ class Food {
         return this.count;
     }
 
-    getRandomValue() {
-        const values = [1, 2];
-        return values[Math.floor(Math.random() * values.length)];
+    getRandomRarity() {
+        var num = Math.random();
+        if (num < 0.02) return 5; //legendary
+        else if (num < 0.08) return 4; //epic
+        else if (num < 0.2) return 3; //ultra rare
+        else if (num < 0.4) return 2; //rare
+        else if (num < 0.75) return 1; //common
+        else return 0; //poison
     }
-
-    setColorByValue(value) {
-        let color;
-        switch (value) {
+    setValueByRarity(rarity) {
+        let value;
+        switch (rarity) {
+            case 0:
+                value = -1;
+                break;
             case 1:
-                color = "green"
+                value = 1;
                 break;
             case 2:
-                color = "yellow"
+                value = 2;
+                break;
+            case 3:
+                value = 3;
+                break;
+            case 4:
+                value = 4;
+                break;
+            case 5:
+                value = 5;
                 break;
             default:
-                color = "white"
+                value = 1;
+        }
+        return value;
+    }
+    setColorByRarity(rarity) {
+        let color;
+        switch (rarity) {
+            case 0:
+                color = "#950000"
+                break;
+            case 1:
+                color = "#98999B"
+                break;
+            case 2:
+                color = "#3D9906"
+                break;
+            case 3:
+                color = "#2BA6E2"
+                break;
+            case 4:
+                color = "#9C33C4"
+                break;
+            case 5:
+                color = "#DD842A"
+                break;
+            default:
+                color = "#98999B"
         }
         return color;
     }

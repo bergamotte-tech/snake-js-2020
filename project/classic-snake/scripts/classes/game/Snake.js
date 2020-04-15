@@ -92,34 +92,43 @@ class Snake {
 
   grow(value) {
     let tail;
-    if (this.body.length > 1) {
-      tail = this.body[0];
-      let preTail = this.body[1]; let y = 0; let x = 0;
+    if (value > 0) {
+      if (this.body.length > 1) {
+        tail = this.body[0];
+        let preTail = this.body[1]; let y = 0; let x = 0;
 
-      if (tail[0] == preTail[0]) { //same x
-        if (tail[1] > preTail[1]) { //tail is at the bottom
-          y = 1;
+        if (tail[0] == preTail[0]) { //same x
+          if (tail[1] > preTail[1]) { //tail is at the bottom
+            y = 1;
+          }
+          else y = -1;
         }
-        else y = -1;
+        else {
+          if (tail[0] < preTail[0]) { //tail is at the left
+            x = -1;
+          }
+          else x = 1;
+        }
+
+        for (let index = 0; index < value; index++) {
+          tail = this.body[0];
+          this.body.unshift([tail[0] + x, tail[1] + y]);
+        }
       }
       else {
-        if (tail[0] < preTail[0]) { //tail is at the left
-          x = -1;
+        for (let index = 0; index < value; index++) {
+          tail = this.body[0];
+          this.body.unshift([tail[0] - this.xdir, tail[1] - this.ydir]);
         }
-        else x = 1;
-      }
-
-      for (let index = 0; index < value; index++) {
-        tail = this.body[0];
-        this.body.unshift([tail[0] + x, tail[1] + y]);
       }
     }
     else {
-      for (let index = 0; index < value; index++) {
-        tail = this.body[0];
-        this.body.unshift([tail[0] - this.xdir, tail[1] - this.ydir]);
+      const iterations = -value;
+      for (let index = 0; index < iterations; index++) {
+        if (this.body.length > 0) this.body.shift();
       }
     }
+
   }
 
   die() {
