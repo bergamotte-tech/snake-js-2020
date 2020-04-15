@@ -269,7 +269,8 @@ class GameSupervisor {
 
     const ctx = food.getCtx();
     const scale = food.getScale();
-    const nbFoods = 1 + (Math.floor(Math.random() * (this.gameSnakes.length)));
+    const probabilities = [1, 1, 1, 1, 1, 1, 2, 2, 2, 3];
+    const nbFoods = probabilities[(Math.floor(Math.random() * (probabilities.length)))];
 
     this.removeGameFood(food.getId());
 
