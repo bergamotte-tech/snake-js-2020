@@ -15,7 +15,6 @@ class Snake {
     this.setInitialDirection();
     document.addEventListener('keydown', e => {
       this.commandPalette.checkKey(e);
-      this.setDirection(this.commandPalette.currentDirection);
     });
 
     this.team = this.getRandomValue();
@@ -47,9 +46,24 @@ class Snake {
     return color;
   }
 
+  goingBackwards() {
+    let isGoingBackwards = false;
+    const requestedDirection = this.commandPalette.currentDirection;
+    const requestedX = requestedDirection[0];
+    const requestedY = requestedDirection[1];
+    if (this.xdir === -requestedX || this.ydir === -requestedY) {
+      isGoingBackwards = true;
+    }
+    return isGoingBackwards;
+  }
+
   // FOR SUPERVISOR
   /*------------------------------------------------------------------------------------------*/
   move() {
+    const isGoingBackwards = this.goingBackwards();
+    if (!isGoingBackwards) {
+      this.setDirection(this.commandPalette.currentDirection);
+    }
     const oldHead = this.body[this.body.length - 1];
     const newHead = [oldHead[0] + this.xdir, oldHead[1] + this.ydir];
     this.body.push(newHead);
@@ -103,7 +117,7 @@ class Snake {
     else {
       for (let index = 0; index < value; index++) {
         tail = this.body[0];
-        this.body.unshift([tail[0] + this.xdir, tail[1] + this.ydir]);
+        this.body.unshift([tail[0] - this.xdir, tail[1] - this.ydir]);
       }
     }
   }

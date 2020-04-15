@@ -21,6 +21,9 @@ async function runGame(canvas, mode, levelNumber) {
     // CREATE THE GAME STATE
     const gameSupervisor = new GameSupervisor(
       level.dimensions,
+      level.minimumDelay,
+      level.speedUpBy,
+      (level.borders == "true"),
       level.delay,
       gameWalls,
       gameSnakes,
@@ -85,9 +88,7 @@ async function getLevelObject(mode, levelNumber) {
   ).then((response) => response.json());
 
   for (var i = 0; i < response.length; i++) {
-    if (response[i].mode == mode) {
-      return response[i];
-    }
+    return response[i];
   }
 
   return null;

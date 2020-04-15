@@ -37,10 +37,6 @@ class Food {
 
     // FOR SUPERVISOR
     /*------------------------------------------------------------------------------------------*/
-    respawn(coordinates) {
-        this.coordinates = [...coordinates];
-    }
-
     show() {
         this.ctx.fillStyle = this.color;
         this.ctx.fillRect(this.coordinates[0] * this.scale, this.coordinates[1] * this.scale, this.scale, this.scale);
@@ -51,6 +47,15 @@ class Food {
     /*------------------------------------------------------------------------------------------*/
     getId() {
         return this.id;
+    }
+    getValue() {
+        return this.value;
+    }
+    getCtx() {
+        return this.ctx;
+    }
+    getScale() {
+        return this.scale;
     }
     /*------------------------------------------------------------------------------------------*/
 }

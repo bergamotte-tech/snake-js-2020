@@ -13,8 +13,9 @@ WORLD = [
 */
 
 class GameSupervisor {
-  constructor(dimensions, delay, gameWalls, gameSnakes, gameFoods) {
+  constructor(dimensions, minimumDelay, speedUpBy, hasBorders, delay, gameWalls, gameSnakes, gameFoods) {
     this.dimensions = [...dimensions];
+    this.hasBorders = hasBorders;
     this.delay = delay;
     this.gameWalls = [...gameWalls];
     this.gameSnakes = [...gameSnakes];
@@ -59,12 +60,32 @@ class GameSupervisor {
 
       // ADD "SNAKE" WHERE THE NEW HEAD IS
       const snakeHead = snake.getHead(); const x = snakeHead[0]; const y = snakeHead[1];
-      if (x < 0 || x >= this.grid[0].length || y < 0 || y >= this.grid.length) { // out of borders
-        snake.die();
-        this.removeGameSnake(snake.getId());
+
+      if (this.hasBorders) {
+        if (x < 0 || x >= this.grid[0].length || y < 0 || y >= this.grid.length) {
+          snake.die();
+          this.removeGameSnake(snake.getId());
+        }
+        else {
+          this.addElementInCell(x, y, [SNAKE, snake.getId()]);
+        }
       }
+
       else {
-        this.addElementInCell(x, y, [SNAKE, snake.getId()]);
+        if (x < 0) {
+          snakeHead[0] = this.grid[0].length - 1;
+        }
+        else if (x >= this.grid[0].length) {
+          snakeHead[0] = 0;
+        }
+        else if (y < 0) {
+          snakeHead[1] = this.grid.length - 1;
+        }
+        else if (y >= this.grid.length) {
+          snakeHead[1] = 0;
+        }
+
+        this.addElementInCell(snakeHead[0], snakeHead[1], [SNAKE, snake.getId()]);
       }
     });
   }
@@ -109,9 +130,10 @@ class GameSupervisor {
 
           //_____________________________________________________________________
           case FOOD:
-            snake.grow(1);
-            if (this.delay > 40) this.delay -= 10;
-            this.respawnFood(elementId);
+            const food = this.getGameFood(elementId);
+            snake.grow(food.getValue());
+            this.createNewFood(food);
+            if (this.delay > this.minimumDelay) this.delay -= this.speedUpBy;
             break;
           //_____________________________________________________________________
 
@@ -183,40 +205,25 @@ class GameSupervisor {
     for (let index = 0; index < elementsHere.length; index++) {
       const element = elementsHere[index];
       if (element[1] === id) {
-        elementsHere.splice(index);
+        elementsHere.splice(index, 1);
       }
     }
   }
-
-  // getElementInCell(x, y, id) {
-  //   const result;
-  //   const elementsHere = this.getElementsInCell(x, y);
-  //   for (let index = 0; index < elementsHere.length; index++) {
-  //     const element = elementsHere[index];
-  //     if (element[1] === id) {
-  //       result = element;
-  //       index = elementsHere.length;
-  //     }
-  //   }
-  //   return result;
-  // }
 
   addElementInCell(x, y, element) {
     this.grid[y][x].push(element);
   }
 
-  getRandomEmptyCoordinates() {
-    const emptyCells = [];
+  getEmptyCoordinates() {
+    const emptyCoordinates = [];
     for (let i = 0; i < this.grid.length; i++) {
       const row = this.grid[i];
       for (let j = 0; j < row.length; j++) {
         const elementsHere = this.grid[i][j];
-        if (elementsHere.length < 1) emptyCells.push([i, j]);
+        if (elementsHere.length < 1) emptyCoordinates.push([i, j]);
       }
     }
-
-    const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    return randomCell;
+    return emptyCoordinates;
   }
   /*------------------------------------------------------------------------------------------*/
 
@@ -227,14 +234,20 @@ class GameSupervisor {
       const snake = this.gameSnakes[index];
       if (snake.getId() === id) {
         const del = this.gameSnakes.splice(index, 1);
-        // console.log("snake " + id + " removed");
-        // console.log(JSON.parse(JSON.stringify(this.gameSnakes)));
       }
     }
   }
 
-  respawnFood(id) {
-    // GET FOOD BY ID
+  removeGameFood(id) {
+    for (let index = 0; index < this.gameFoods.length; index++) {
+      const food = this.gameFoods[index];
+      if (food.getId() === id) {
+        const del = this.gameFoods.splice(index, 1);
+      }
+    }
+  }
+
+  getGameFood(id) {
     let food;
     for (let index = 0; index < this.gameFoods.length; index++) {
       food = this.gameFoods[index];
@@ -242,12 +255,31 @@ class GameSupervisor {
         index = this.gameFoods.length;
       }
     }
+    return food;
+  }
 
-    // FIND EMPTY CELL
-    const coordinates = this.getRandomEmptyCoordinates();
+  createNewFood(food) {
+    console.log("**");
+    console.log(JSON.parse(JSON.stringify(this.gameFoods)));
+    console.log("**");
 
-    // RESPAWN IT
-    food.respawn([coordinates[1], coordinates[0]]);
+
+    // FIND EMPTY CELLS
+    const emptyCoordinates = this.getEmptyCoordinates();
+
+    const ctx = food.getCtx();
+    const scale = food.getScale();
+    const nbFoods = 1 + (Math.floor(Math.random() * (this.gameSnakes.length)));
+
+    this.removeGameFood(food.getId());
+
+    for (let index = 0; index < nbFoods; index++) {
+      const coordinates = emptyCoordinates[Math.floor(Math.random() * emptyCoordinates.length)];
+      const newFood = new Food(ctx, scale, [coordinates[1], coordinates[0]]);
+      this.gameFoods.push(newFood);
+    }
+
+    console.log(JSON.parse(JSON.stringify(this.gameFoods)));
   }
   /*------------------------------------------------------------------------------------------*/
 
