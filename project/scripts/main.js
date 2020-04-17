@@ -45,7 +45,7 @@ window.addEventListener("load", function () {
     buttonValidate.addEventListener("click", submitCommands);
 
     // LEVELS
-    const nbLevels = 3;
+    const nbLevels = 4;
     const authorizedLevels = [];
     for (let index = 1; index <= nbLevels; index++) {
         authorizedLevels.push(index.toString());

@@ -49,28 +49,44 @@ function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
   const instanceNumber = globalInstanceNumber;
 
   var music = new Audio('../assets/sounds/music.mp3');
+  var gameOver = new Audio('../assets/sounds/gameOver.mp3');
   const originalPlayBackRate = 0.6;
   let newPlayBackRate;
   music.loop = true;
   music.volume = 0.2;
+  gameOver.loop = false;
+  gameOver.volume = 0.18;
 
 
   var interval;
+  let over = false;
   var loopFunction = function () {
-    if (instanceNumber >= globalInstanceNumber && (window.location.hash.substr(0, window.location.hash.length) === "#level" + levelNumber)) {
+    if (!over && instanceNumber >= globalInstanceNumber && (window.location.hash.substr(0, window.location.hash.length) === "#level" + levelNumber)) {
 
       let increase = (gameSupervisor.originalDelay / gameSupervisor.delay) - 1;
       newPlayBackRate = originalPlayBackRate + increase / 1.8;
       if (newPlayBackRate > 1.8) newPlayBackRate = 1.8;
       music.playbackRate = newPlayBackRate;
 
+      if (gameSupervisor.gameSnakes.length < 1) {
+        over = true;
+      }
+
       interval = gameSupervisor.delay;
       clearCanvas(canvas, ctx);
       refreshGame(gameSupervisor);
       setTimeout(loopFunction, interval);
     }
+    else if (over) {
+      gameOver.play();
+      music.pause();
+    }
     else {
       music.pause();
+      gameSupervisor.scoreList.forEach(element => {
+        const div = element[1];
+        div.remove();
+      });
     }
   };
   music.play();
