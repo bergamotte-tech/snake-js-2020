@@ -13,7 +13,7 @@ WORLD = [
 */
 
 class GameSupervisor {
-  constructor(dimensions, minimumDelay, hasBorders, delay, gameWalls, gameSnakes, gameFoods) {
+  constructor(dimensions, minimumDelay, hasBorders, delay, gameWalls, gameSnakes, gameFoods, levelNumber) {
     this.dimensions = [...dimensions];
     this.minimumDelay = minimumDelay;
     this.hasBorders = hasBorders;
@@ -22,6 +22,8 @@ class GameSupervisor {
     this.gameWalls = [...gameWalls];
     this.gameSnakes = [...gameSnakes];
     this.gameFoods = [...gameFoods];
+    this.levelNumber = levelNumber;
+
     this.scoreWrapper = document.getElementsByClassName("game-scores")[0];
     this.scoreList = this.initScoreList();
 
@@ -231,10 +233,19 @@ class GameSupervisor {
 
   /*------------------------------------------------------------------------------------------*/
   updateScore(snake) {
+    let bestScore = localStorage.getItem('level' + this.levelNumber + 'BestScore');
+    if (bestScore == null || bestScore == undefined) bestScore = 0;
+
+
     this.scoreList.forEach(element => {
       if (element[0] === snake.getId()) {
-        const score = element[2];
-        score.innerHTML = snake.getScore();
+        const scoreArea = element[2];
+        const snakeScore = snake.getScore();
+        scoreArea.innerHTML = snakeScore;
+        if (snakeScore > bestScore) {
+          localStorage.setItem('level' + this.levelNumber + 'BestScore', snakeScore.toString());
+          localStorage.setItem('level' + this.levelNumber + 'BestPlayer', snake.getName());
+        }
       }
     });
     // this.scoreList.sort(sortFunction);

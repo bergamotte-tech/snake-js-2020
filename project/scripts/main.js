@@ -157,6 +157,14 @@ window.addEventListener("load", function () {
         screenGame.style.display = "flex";
         navbarPrev.style.display = "flex";
         arcadeTitle.innerHTML = "Level " + levelNumber;
+        if (localStorage.getItem('level' + levelNumber + 'BestScore') && localStorage.getItem('level' + levelNumber + 'BestPlayer')) {
+            const BS = localStorage.getItem('level' + levelNumber + 'BestScore');
+            const BP = localStorage.getItem('level' + levelNumber + 'BestPlayer');
+            navbarAction.style.display = "flex";
+            navbarAction.textContent = "🏆" + BP + "🏆 " + BS + "pts";
+        }
+        else {
+        }
         runGame(gameCanvas, canvasContext, canvasScale, mode, levelNumber, createdSnakes);
     }
     function displayLobby() {
@@ -167,6 +175,7 @@ window.addEventListener("load", function () {
         screenLobby.style.display = "flex";
         navbarAction.style.display = "flex";
         navbarNext.style.display = "flex";
+        navbarAction.textContent = "ADD PLAYER";
         arcadeTitle.innerHTML = "Lobby";
         if (nbPlayers < 1) {
             navbarNext.classList.add("disabled");

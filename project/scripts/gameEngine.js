@@ -26,7 +26,8 @@ async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
       level.delay,
       gameWalls,
       gameSnakes,
-      gameFoods
+      gameFoods,
+      levelNumber
     );
 
     // PREPARE CANVAS
@@ -77,11 +78,8 @@ function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
       refreshGame(gameSupervisor);
       setTimeout(loopFunction, interval);
     }
-    else if (over) {
-      gameOver.play();
-      music.pause();
-    }
     else {
+      gameOver.play();
       music.pause();
       gameSupervisor.scoreList.forEach(element => {
         const div = element[1];
