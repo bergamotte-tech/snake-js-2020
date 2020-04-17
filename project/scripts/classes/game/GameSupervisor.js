@@ -391,6 +391,7 @@ class GameSupervisor {
     this.gameSnakes.forEach(snake => {
       const scoreDiv = document.createElement('div');
       scoreDiv.classList.add("score-row");
+      scoreDiv.style.backgroundColor = snake.getColor();
 
       const score = document.createElement('h1');
       score.classList.add("score-value");

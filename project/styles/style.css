@@ -318,11 +318,6 @@ canvas {
 .score-row {
   height: auto;
   width: 100%;
-  background-color: var(--background-secondary);
-}
-
-.score-row:nth-child(odd) {
-  background-color: var(--text-secondary);
 }
 /* .score-value {
 }

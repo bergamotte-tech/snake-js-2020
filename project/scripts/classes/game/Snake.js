@@ -86,6 +86,9 @@ class Snake {
   getScore() {
     return this.score;
   }
+  getColor() {
+    return this.color;
+  }
 
   /*------------------------------------------------------------------------------------------*/
   goingBackwards() {
