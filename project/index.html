@@ -1,16 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Snake</title>
-  </head>
 
-  <body>
-    <div id="index">
-      <a href="classic-snake/index.html">CLASSIC</a>
-      <a href="snake-invaders/index.html">INVADERS</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./styles/style.css" />
+  <title>SuperSnake</title>
+</head>
+
+<body>
+  <!-------------------------------------------------------->
+  <div id="page-home" class="page" style="display: none;">
+    <h1>HOME</h1>
+    <button onclick="window.location.hash = 'lobby'">Play</button>
+    <button onclick="window.location.hash = 'credits'">Credits</button>
+  </div>
+  <!-------------------------------------------------------->
+
+
+  <!-------------------------------------------------------->
+  <div id="page-credits" class="page" style="display: none;">
+    <h1>CREDITS</h1>
+  </div>
+  <!-------------------------------------------------------->
+
+
+  <!-------------------------------------------------------->
+  <div id="page-other" class="page" style="display: none;">
+    <!------------------------------------------>
+    <div class="arcade-top">
+      <div class="arcade-title-wrapper">
+        <h2 class="arcade-title">TITLE</h2>
+      </div>
+
+      <div class="arcade-navbar">
+
+        <div class="section">
+          <div class="navbar-prev" style="display: none;">
+            <h3>◀</h3>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="navbar-action" style="display: none;">
+            <h3>ADD PLAYER</h3>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="navbar-next" style="display: none;">
+            <h3>▶</h3>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </body>
+    <!------------------------------------------>
+    <!------------------------------------------>
+    <div class="arcade-screen">
+      <div class="screen-lobby" style="display: none;">
+        <div class="players-display">
+          <h1 class="players-placeholder">Start by ⬆adding⬆ a player</h1>
+        </div>
+
+        <div class="prompt-commands" style="display: none;">
+          <h1>Set your commands</h1>
+          <div class="commands-wrapper">
+            <div tabindex="0" class="command up">
+              <h2 class="key-symbol"></h2>
+              <p>up</p>
+            </div>
+            <div tabindex="0" class="command right">
+              <h2 class="key-symbol"></h2>
+              <p>right</p>
+            </div>
+            <div tabindex="0" class="command down">
+              <h2 class="key-symbol"></h2>
+              <p>down</p>
+            </div>
+            <div tabindex="0" class="command left">
+              <h2 class="key-symbol"></h2>
+              <p>left</p>
+            </div>
+          </div>
+          <button class="prompt-validate">OK</button>
+        </div>
+
+      </div>
+      <!------------------------------------------>
+      <div class="screen-levels" style="display: none;">
+        <div class="levels-display"></div>
+      </div>
+      <!------------------------------------------>
+      <div class="screen-game" style="display: none;">
+        <canvas width="0" height="0"></canvas>
+        <div class="game-scores"></div>
+      </div>
+    </div>
+    <!------------------------------------------>
+  </div>
+  <!-------------------------------------------------------->
+
+  <script>
+    let path = window.location.pathname;
+    if (path[path.length - 1] != "/") window.location.pathname += "/";
+  </script>
+  <script src="./scripts/main.js" type="module"></script>
+</body>
+
 </html>
