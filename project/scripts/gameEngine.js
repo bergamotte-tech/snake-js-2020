@@ -48,8 +48,8 @@ async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
 function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
   const instanceNumber = globalInstanceNumber;
 
-  var music = new Audio(`${window.location.hostname}/assets/sounds/music.mp3`);
-  var gameOver = new Audio(`${window.location.hostname}/assets/sounds/gameOver.mp3`);
+  var music = new Audio(`assets/sounds/music.mp3`);
+  var gameOver = new Audio(`assets/sounds/gameOver.mp3`);
   const originalPlayBackRate = 0.6;
   let newPlayBackRate;
   music.loop = true;

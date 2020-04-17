@@ -10,7 +10,7 @@ class Food {
     this.rarity = this.getRandomRarity();
     this.value = this.setValueByRarity(this.rarity);
     this.color = this.setColorByRarity(this.rarity);
-    this.sound = new Audio(`${window.location.hostname}/assets/sounds/food.mp3`);
+    this.sound = new Audio("assets/sounds/food.mp3");
   }
 
   static generateId() {
