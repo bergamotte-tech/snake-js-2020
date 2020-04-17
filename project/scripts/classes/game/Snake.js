@@ -11,7 +11,7 @@ class Snake {
     this.team = 1; //1 to 4
     this.color = "white";
     this.score = 0;
-    this.deathSound = new Audio(`${window.location.hostname}/assets/sounds/death.mp3`);
+    this.deathSound = new Audio(`assets/sounds/death.mp3`);
 
     this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft");
     document.addEventListener("keydown", (e) => {
