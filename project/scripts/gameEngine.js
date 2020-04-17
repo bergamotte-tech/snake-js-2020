@@ -7,7 +7,6 @@ import GameSupervisor from "./classes/game/GameSupervisor.js";
 let globalInstanceNumber = 0;
 async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
   if (mode === "solo" || mode === "multi") {
-
     globalInstanceNumber++;
 
     // GET LEVEL INFOS
@@ -22,7 +21,7 @@ async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
     const gameSupervisor = new GameSupervisor(
       level.dimensions,
       level.minimumDelay,
-      (level.borders == "true"),
+      level.borders == "true",
       level.delay,
       gameWalls,
       gameSnakes,
@@ -39,18 +38,18 @@ async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
 
     // LAUNCH
     startLoop(canvas, ctx, gameSupervisor, levelNumber);
-  } else console.error("Mode " + mode + " does not exist"); return 0;
+  } else console.error("Mode " + mode + " does not exist");
+  return 0;
 }
 /*------------------------------------------------------------------------------------------*/
-
 
 // FUNCTIONS
 /*------------------------------------------------------------------------------------------*/
 function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
   const instanceNumber = globalInstanceNumber;
 
-  var music = new Audio('../assets/sounds/music.mp3');
-  var gameOver = new Audio('../assets/sounds/gameOver.mp3');
+  var music = new Audio(`${window.location.hostname}/assets/sounds/music.mp3`);
+  var gameOver = new Audio(`${window.location.hostname}/assets/sounds/gameOver.mp3`);
   const originalPlayBackRate = 0.6;
   let newPlayBackRate;
   music.loop = true;
@@ -58,13 +57,15 @@ function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
   gameOver.loop = false;
   gameOver.volume = 0.18;
 
-
   var interval;
   let over = false;
   var loopFunction = function () {
-    if (!over && instanceNumber >= globalInstanceNumber && (window.location.hash.substr(0, window.location.hash.length) === "#level" + levelNumber)) {
-
-      let increase = (gameSupervisor.originalDelay / gameSupervisor.delay) - 1;
+    if (
+      !over &&
+      instanceNumber >= globalInstanceNumber &&
+      window.location.hash.substr(0, window.location.hash.length) === "#level" + levelNumber
+    ) {
+      let increase = gameSupervisor.originalDelay / gameSupervisor.delay - 1;
       newPlayBackRate = originalPlayBackRate + increase / 1.8;
       if (newPlayBackRate > 1.8) newPlayBackRate = 1.8;
       music.playbackRate = newPlayBackRate;
@@ -77,11 +78,10 @@ function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
       clearCanvas(canvas, ctx);
       refreshGame(gameSupervisor);
       setTimeout(loopFunction, interval);
-    }
-    else {
+    } else {
       gameOver.play();
       music.pause();
-      gameSupervisor.scoreList.forEach(element => {
+      gameSupervisor.scoreList.forEach((element) => {
         const div = element[1];
         div.remove();
       });

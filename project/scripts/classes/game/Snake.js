@@ -11,10 +11,10 @@ class Snake {
     this.team = 1; //1 to 4
     this.color = "white";
     this.score = 0;
-    this.deathSound = new Audio('../assets/sounds/death.mp3');
+    this.deathSound = new Audio(`${window.location.hostname}/assets/sounds/death.mp3`);
 
     this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft");
-    document.addEventListener('keydown', e => {
+    document.addEventListener("keydown", (e) => {
       this.commandPalette.checkKey(e);
     });
 
@@ -58,23 +58,18 @@ class Snake {
 
       if (head[1] > preHead[1]) {
         this.commandPalette.setCurrentDirection([0, 1]); //down
-      }
-      else if (head[1] < preHead[1]) {
+      } else if (head[1] < preHead[1]) {
         this.commandPalette.setCurrentDirection([0, -1]); //up
-      }
-      else if (head[0] < preHead[0]) {
+      } else if (head[0] < preHead[0]) {
         this.commandPalette.setCurrentDirection([-1, 0]); //left
-      }
-      else {
+      } else {
         this.commandPalette.setCurrentDirection([1, 0]); //right
       }
-    }
-    else {
+    } else {
       this.commandPalette.setCurrentDirection([1, 0]); //right
     }
     this.setDirection(this.commandPalette.currentDirection);
   }
-
 
   getBody() {
     return this.body.map(([x, y]) => [x, y]);
@@ -92,7 +87,6 @@ class Snake {
     return this.score;
   }
 
-
   /*------------------------------------------------------------------------------------------*/
   goingBackwards() {
     let isGoingBackwards = false;
@@ -104,7 +98,6 @@ class Snake {
     }
     return isGoingBackwards;
   }
-
 
   // FOR SUPERVISOR
   /*------------------------------------------------------------------------------------------*/
@@ -144,34 +137,34 @@ class Snake {
     if (value > 0) {
       if (this.body.length > 1) {
         tail = this.body[0];
-        let preTail = this.body[1]; let y = 0; let x = 0;
+        let preTail = this.body[1];
+        let y = 0;
+        let x = 0;
 
-        if (tail[0] == preTail[0]) { //same x
-          if (tail[1] > preTail[1]) { //tail is at the bottom
+        if (tail[0] == preTail[0]) {
+          //same x
+          if (tail[1] > preTail[1]) {
+            //tail is at the bottom
             y = 1;
-          }
-          else y = -1;
-        }
-        else {
-          if (tail[0] < preTail[0]) { //tail is at the left
+          } else y = -1;
+        } else {
+          if (tail[0] < preTail[0]) {
+            //tail is at the left
             x = -1;
-          }
-          else x = 1;
+          } else x = 1;
         }
 
         for (let index = 0; index < value; index++) {
           tail = this.body[0];
           this.body.unshift([tail[0] + x, tail[1] + y]);
         }
-      }
-      else {
+      } else {
         for (let index = 0; index < value; index++) {
           tail = this.body[0];
           this.body.unshift([tail[0] - this.xdir, tail[1] - this.ydir]);
         }
       }
-    }
-    else {
+    } else {
       const iterations = -value;
       for (let index = 0; index < iterations; index++) {
         if (this.body.length > 0) this.body.shift();
