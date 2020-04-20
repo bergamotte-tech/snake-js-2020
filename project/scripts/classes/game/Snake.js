@@ -227,7 +227,13 @@ class Snake {
   }
 
   die() {
+    this.unpoisonSelf();
     this.deathSound.play();
+  }
+
+  reset() {
+    this.score = null;
+    this.poisonAmmo = 0;
   }
   /*------------------------------------------------------------------------------------------*/
 }

@@ -81,7 +81,7 @@ function startLoop(canvas, ctx, gameSupervisor, gameSnakes, levelNumber) {
         div.remove();
       });
       gameSnakes.forEach(snake => {
-        snake.score = null;
+        snake.reset();
       });
     }
     else if (over) {
@@ -228,6 +228,8 @@ function getWinningTeams(gameSnakes) {
   else {
     sentence = teams[0] + " team wins !";
   }
+  //   const teamNames=[, "Blue", "Green", "Red", "Yellow"];
+  // console.log(`It's a draw between teams ${teams.map(t => teamNames[t]).join(', ')}`);
   return sentence;
 }
 

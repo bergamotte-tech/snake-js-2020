@@ -372,7 +372,7 @@ canvas {
 
 .score-container {
   width: 70%;
-  min-width: 2rem;
+  min-width: 4rem;
   margin: 1.4rem 0;
   padding: 0.3rem 1.4rem;
   border-radius: 5px;

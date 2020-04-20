@@ -1,9 +1,9 @@
 [
   {
-    "dimensions": [40, 40],
-    "borders": "false",
-    "delay": 100,
-    "minimumDelay": 50,
+    "dimensions": [70, 40],
+    "borders": "true",
+    "delay": 300,
+    "minimumDelay": 10,
     "walls": [
       [0, 8],
       [1, 8],
