@@ -16,8 +16,8 @@
 ::selection,
 ::-moz-selection,
 ::-webkit-selection {
-  color: var(--contrast-primary);
-  background-color: var(--contrast-secondary);
+  color: var(--text-primary, pre);
+  background-color: var(--text-secondary);
 }
 
 ::-webkit-scrollbar {
@@ -39,7 +39,8 @@
   h2 {
     font-size: 1.8rem;
   }
-  h3 {
+  h3,
+  pre {
     font-size: 1.1rem;
   }
   p,
@@ -57,7 +58,8 @@
   h2 {
     font-size: 2.5rem;
   }
-  h3 {
+  h3,
+  pre {
     font-size: 1.6rem;
   }
   p,
@@ -75,7 +77,8 @@
   h2 {
     font-size: 3rem;
   }
-  h3 {
+  h3,
+  pre {
     font-size: 2rem;
   }
   p,
@@ -127,6 +130,12 @@ div * {
   align-items: center;
 }
 
+a,
+a:active {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
 *:disabled {
   cursor: not-allowed !important;
 }
@@ -165,10 +174,16 @@ button:hover,
   margin: 1rem 0;
 }
 
+#page-credits p {
+  display: flex;
+  flex-direction: row;
+}
+
 /*------------------------------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------------------------------*/
 .arcade-top {
+  max-height: 20vh;
   width: 100%;
 }
 .arcade-title-wrapper {
@@ -184,20 +199,42 @@ button:hover,
   background-color: var(--contrast-primary);
   flex-direction: row;
 }
-.arcade-navbar .section {
-  width: 33.33%;
-}
 .navbar-prev {
   margin-right: auto;
-  padding: 0 2rem;
+  margin-left: 4rem;
 }
 .navbar-action {
   margin: auto;
-  padding: 0 2rem;
+  padding: 0.05rem 0.8rem;
+  background-color: var(--text-secondary);
+  border-radius: 5px;
+}
+.navbar-action * {
+  color: var(--text-primary);
 }
 .navbar-next {
   margin-left: auto;
-  padding: 0 2rem;
+  margin-right: 4rem;
+}
+
+.hint {
+  animation: hint 2s ease infinite;
+}
+@keyframes hint {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+li p {
+  display: flex;
+  flex-direction: row;
 }
 /*------------------------------------------------------------------------------------------*/
 
@@ -242,6 +279,9 @@ button:hover,
 .commands-wrapper .command:focus {
   background-color: var(--background-primary) !important;
 }
+.commands-wrapper .command:hover {
+  cursor: pointer;
+}
 
 .players-display {
   position: relative;
@@ -255,10 +295,14 @@ button:hover,
 }
 
 .player {
-  padding: 0.3rem 0.6rem;
+  padding: 0.3rem 1rem;
   background-color: var(--contrast-primary);
   text-transform: uppercase;
   border-radius: 5px;
+}
+
+.gamertag {
+  text-transform: none;
 }
 
 .player * {
@@ -269,15 +313,15 @@ button:hover,
   margin: 0.2rem 0;
 }
 
-.player-color,
-.color-option,
-.color-palette * {
+.color-option {
   height: 25px;
   width: 25px;
+  border: solid black 1px;
 }
 
 .color-palette {
   flex-direction: row;
+  border: solid black 0.5px;
 }
 /*------------------------------------------------------------------------------------------*/
 
@@ -304,23 +348,80 @@ canvas {
   background-color: black;
   height: auto;
   max-width: 80%;
-  margin: auto;
 }
 
 .game-scores {
-  height: 100%;
-  background-color: var(--contrast-primary);
-  width: 20%;
-  margin-left: auto;
+  max-height: 75vh;
+  width: auto;
+  background-color: transparent;
   justify-content: start;
+  overflow-y: auto;
+  border-radius: 5px;
+  padding: 0 2rem;
 }
 
-.score-row {
-  height: auto;
+.score-value {
+  line-height: 4rem;
+  position: relative;
+}
+
+.score-container {
+  width: 70%;
+  margin: 1.4rem 0;
+  padding: 0.3rem 1.4rem;
+  border-radius: 5px;
+  box-shadow: 0 10px 5px black;
+  text-shadow: -1px -1px 0.5px #000, 1px -1px 0.5px #000, -1px 1px 0.5px #000,
+    1px 1px 0.5px #000;
+  transition: ease-out 0.5s;
+}
+
+.dead {
+  position: relative;
+  margin: 1.2rem 0;
+  transform: scale(0.8);
+  transition: ease-in 1s;
+}
+
+.dead::before {
+  content: "";
+  position: absolute;
+  top: -15%;
+  width: 40%;
+  height: 10%;
+  border: solid white 0.625rem;
+  border-top: solid white 0.45rem;
+  border-radius: 50%;
+  overflow: visible;
+  box-shadow: 0 0 10px white;
+  animation: float 5s ease-in-out infinite;
+}
+
+.winner {
+  position: relative;
+  margin: 2rem 0;
+  transition: ease-in 1s;
+}
+
+.winner::after {
+  content: "👑";
+  font-size: 2.4rem;
+  position: absolute;
+  top: -25%;
   width: 100%;
+  height: 10%;
+  overflow: visible;
 }
-/* .score-value {
+
+@keyframes float {
+  0% {
+    transform: translateY(-15%);
+  }
+  50% {
+    transform: translateY(10%);
+  }
+  100% {
+    transform: translateY(-15%);
+  }
 }
-.score-name {
-} */
 /*------------------------------------------------------------------------------------------*/

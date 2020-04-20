@@ -5,7 +5,7 @@ import GameSupervisor from "./classes/game/GameSupervisor.js";
 
 /*------------------------------------------------------------------------------------------*/
 let globalInstanceNumber = 0;
-async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
+async function runGame(canvas, ctx, mode, levelNumber, gameSnakes) {
   if (mode === "solo" || mode === "multi") {
     globalInstanceNumber++;
 
@@ -13,7 +13,9 @@ async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
     const level = await getLevelObject(mode, levelNumber);
 
     // CREATE ELEMENTS
-    placeSnakes(gameSnakes, level.snakes);
+    const scale = ((canvas.parentNode.clientWidth / level.dimensions[0]) * 0.5).toFixed(0);
+
+    placeSnakes(gameSnakes, scale, level.snakes);
     const gameFoods = createFoods(ctx, scale, level.foods);
     const gameWalls = createWalls(ctx, scale, level.walls);
 
@@ -33,7 +35,8 @@ async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
     resizeCanvas(
       canvas,
       gameSupervisor.dimensions[0] * scale,
-      gameSupervisor.dimensions[1] * scale
+      gameSupervisor.dimensions[1] * scale,
+      gameSupervisor.hasBorders
     );
 
     // LAUNCH
@@ -46,25 +49,39 @@ async function runGame(canvas, ctx, scale, mode, levelNumber, gameSnakes) {
 // FUNCTIONS
 /*------------------------------------------------------------------------------------------*/
 function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
-  const instanceNumber = globalInstanceNumber;
-
-  var music = new Audio(`assets/sounds/music.mp3`);
+  var music = new Audio(`assets/sounds/level${levelNumber}.mp3`);
   var gameOver = new Audio(`assets/sounds/gameOver.mp3`);
   const originalPlayBackRate = 0.6;
   let newPlayBackRate;
   music.loop = true;
-  music.volume = 0.2;
+  music.volume = 0.4;
   gameOver.loop = false;
-  gameOver.volume = 0.18;
+  gameOver.volume = 0.4;
 
+  const instanceNumber = globalInstanceNumber;
   var interval;
   let over = false;
+  let alreadyTriggered = false;
+
   var loopFunction = function () {
-    if (
-      !over &&
-      instanceNumber >= globalInstanceNumber &&
-      window.location.hash.substr(0, window.location.hash.length) === "#level" + levelNumber
-    ) {
+    if (instanceNumber < globalInstanceNumber ||
+      window.location.hash.substr(0, window.location.hash.length) != "#level" + levelNumber) {
+      music.pause();
+      gameSupervisor.scoreList.forEach((element) => {
+        const div = element[1];
+        div.remove();
+      });
+    }
+    else if (over) {
+      if (!alreadyTriggered) {
+        gameOver.play();
+        music.volume = 0.2;
+        music.playbackRate = 1;
+        alreadyTriggered = true;
+      }
+      setTimeout(loopFunction, 200);
+    }
+    else {
       let increase = gameSupervisor.originalDelay / gameSupervisor.delay - 1;
       newPlayBackRate = originalPlayBackRate + increase / 1.8;
       if (newPlayBackRate > 1.8) newPlayBackRate = 1.8;
@@ -78,13 +95,6 @@ function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
       clearCanvas(canvas, ctx);
       refreshGame(gameSupervisor);
       setTimeout(loopFunction, interval);
-    } else {
-      gameOver.play();
-      music.pause();
-      gameSupervisor.scoreList.forEach((element) => {
-        const div = element[1];
-        div.remove();
-      });
     }
   };
   music.play();
@@ -99,9 +109,12 @@ function refreshGame(gameSupervisor) {
 /*------------------------------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------------------------------*/
-function resizeCanvas(canvas, width, height) {
+function resizeCanvas(canvas, width, height, hasBorders) {
   canvas.width = width;
   canvas.height = height;
+  if (hasBorders) {
+    canvas.style.border = "solid #5F6A73 5px"
+  }
 }
 /*------------------------------------------------------------------------------------------*/
 
@@ -127,10 +140,11 @@ async function getLevelObject(mode, levelNumber) {
 /*------------------------------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------------------------------*/
-function placeSnakes(snakes, snakesCoordinates) {
+function placeSnakes(snakes, scale, snakesCoordinates) {
   for (let index = 0; index < snakes.length; index++) {
     const snake = snakes[index];
     const coordinates = snakesCoordinates[index];
+    snake.setScale(scale);
     snake.setBody(coordinates);
   }
 }
@@ -157,5 +171,6 @@ function createWalls(ctx, scale, wallsCoordinates) {
   return gameWalls;
 }
 /*------------------------------------------------------------------------------------------*/
+
 
 export { runGame as default };

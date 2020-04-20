@@ -62,7 +62,7 @@ class Food {
     let color;
     switch (rarity) {
       case 0:
-        color = "#B2AC00";
+        color = "#BBFF00";
         break;
       case 1:
         color = "#E277BB";

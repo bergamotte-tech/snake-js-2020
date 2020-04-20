@@ -7,7 +7,7 @@ class Wall {
         this.ctx = ctx;
         this.scale = scale;
         this.coordinates = [...coordinates];
-        this.color = "#ffffff";
+        this.color = "#5F6A73";
     }
 
     static generateId() {

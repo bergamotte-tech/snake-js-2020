@@ -13,8 +13,9 @@ window.addEventListener("load", function () {
     const arcadeNavbar = arcadeTop.getElementsByClassName("arcade-navbar")[0];
     const navbarPrev = arcadeNavbar.getElementsByClassName("navbar-prev")[0];
     const navbarAction = arcadeNavbar.getElementsByClassName("navbar-action")[0];
+    const navbarChampion = arcadeNavbar.getElementsByClassName("navbar-champion")[0];
     const navbarNext = arcadeNavbar.getElementsByClassName("navbar-next")[0];
-    const navbarContent = [navbarPrev, navbarAction, navbarNext];
+    const navbarContent = [navbarPrev, navbarAction, navbarChampion, navbarNext];
 
     const arcadeScreen = this.document.getElementsByClassName("arcade-screen")[0];
     const screenLevels = arcadeScreen.getElementsByClassName("screen-levels")[0];
@@ -35,7 +36,8 @@ window.addEventListener("load", function () {
     const zoneRight = [promptCommands.getElementsByClassName("right")[0], "right"];
     const zoneDown = [promptCommands.getElementsByClassName("down")[0], "down"];
     const zoneLeft = [promptCommands.getElementsByClassName("left")[0], "left"];
-    const zones = [zoneUp, zoneRight, zoneDown, zoneLeft];
+    const zoneAction = [promptCommands.getElementsByClassName("action")[0], "action"];
+    const zones = [zoneUp, zoneRight, zoneDown, zoneLeft, zoneAction];
     zones.forEach(zone => {
         zone[0].addEventListener("keydown", e => {
             addKey(e.key, zone[0], zone[1]);
@@ -57,12 +59,21 @@ window.addEventListener("load", function () {
     // GAME
     const gameCanvas = screenGame.getElementsByTagName("canvas")[0];
     const canvasContext = gameCanvas.getContext("2d");
-    const canvasScale = 10;
     /*------------------------------------------------------------------------------------------*/
 
 
     // GLOBAL
     /*------------------------------------------------------------------------------------------*/
+    // const musicHome = new Audio(`assets/sounds/home.mp3`);
+    const musicLobby = new Audio(`assets/sounds/lobby.mp3`);
+
+    function stopMusics(musics) {
+        musics.forEach(music => {
+            music.pause();
+            music.currentTime = 0
+        });
+    }
+
     window.addEventListener("hashchange", getRequestedPage);
     getRequestedPage();
 
@@ -73,6 +84,9 @@ window.addEventListener("load", function () {
                 displayCredits();
                 break;
             case "#lobby":
+                navbarPrev.addEventListener("click", function () {
+                    { window.location.hash = '' }
+                });
                 navbarNext.addEventListener("click", function () {
                     if (nbPlayers > 0) { window.location.hash = 'levels' }
                 });
@@ -141,6 +155,12 @@ window.addEventListener("load", function () {
         pageCredits.style.display = "flex";
     }
     function displayLevels() {
+        if (musicLobby.paused) {
+            musicLobby.currentTime = 0;
+            musicLobby.volume = 0.5;
+            musicLobby.loop = true;
+            musicLobby.play();
+        }
         clearPageContent();
         clearScreenContent();
         clearNavbarContent();
@@ -150,6 +170,7 @@ window.addEventListener("load", function () {
         arcadeTitle.innerHTML = "Level menu";
     }
     function displayGame(mode, levelNumber) {
+        stopMusics([musicLobby]);
         clearPageContent();
         clearScreenContent();
         clearNavbarContent();
@@ -160,22 +181,28 @@ window.addEventListener("load", function () {
         if (localStorage.getItem('level' + levelNumber + 'BestScore') && localStorage.getItem('level' + levelNumber + 'BestPlayer')) {
             const BS = localStorage.getItem('level' + levelNumber + 'BestScore');
             const BP = localStorage.getItem('level' + levelNumber + 'BestPlayer');
-            navbarAction.style.display = "flex";
-            navbarAction.textContent = "🏆" + BP + "🏆 " + BS + "pts";
+            navbarChampion.style.display = "flex";
+            navbarChampion.textContent = "🏆 " + BP + " : " + BS + "pts 🏆";
         }
         else {
         }
-        runGame(gameCanvas, canvasContext, canvasScale, mode, levelNumber, createdSnakes);
+        runGame(gameCanvas, canvasContext, mode, levelNumber, createdSnakes);
     }
     function displayLobby() {
+        if (musicLobby.paused) {
+            musicLobby.currentTime = 0;
+            musicLobby.volume = 0.5;
+            musicLobby.loop = true;
+            musicLobby.play();
+        }
         clearPageContent();
         clearScreenContent();
         clearNavbarContent();
         pageOther.style.display = "flex";
         screenLobby.style.display = "flex";
         navbarAction.style.display = "flex";
+        navbarPrev.style.display = "flex";
         navbarNext.style.display = "flex";
-        navbarAction.textContent = "ADD PLAYER";
         arcadeTitle.innerHTML = "Lobby";
         if (nbPlayers < 1) {
             navbarNext.classList.add("disabled");
@@ -202,7 +229,7 @@ window.addEventListener("load", function () {
 
     // LOBBY
     /*------------------------------------------------------------------------------------------*/
-    let commands = [null, null, null, null];
+    let commands = [null, null, null, null, null];
 
     function displayPrompt() {
         document.getElementsByClassName('players-placeholder')[0].style.display = "none";
@@ -213,10 +240,11 @@ window.addEventListener("load", function () {
     }
 
     function submitCommands() {
-        const newSnake = new Snake(canvasContext, canvasScale);
-        newSnake.commandPalette.changeCommands(commands[0], commands[1], commands[2], commands[3]);
+        const newSnake = new Snake(canvasContext);
+        newSnake.commandPalette.changeCommands(commands[0], commands[1], commands[2], commands[3], commands[4]);
         addPlayer(newSnake);
         navbarNext.classList.remove("disabled");
+        navbarNext.classList.add("hint");
         promptCommands.style.display = 'none';
         resetSymbols();
     }
@@ -229,13 +257,14 @@ window.addEventListener("load", function () {
         const playerDiv = document.createElement('div');
         playerDiv.classList.add('player');
 
-        const playerName = document.createElement('h2');
-        playerName.innerHTML = '*Name Here*';
+        const playerName = document.createElement('input');
         playerName.classList.add("gamertag");
-        snake.setName(playerName.innerHTML)
-        playerName.contentEditable = true;
+        playerName.spellcheck = false;
+        playerName.maxLength = 15;
+        playerName.placeholder = 'Name Here';
+        snake.setName(playerName.placeholder)
         playerName.addEventListener("keyup", function () {
-            snake.setName(playerName.innerHTML);
+            snake.setName(playerName.value);
         });
         playerDiv.appendChild(playerName);
 
@@ -307,16 +336,16 @@ window.addEventListener("load", function () {
         let newColors = [];
         switch (teamNumber) {
             case "1":
-                newColors = ["#2039CC", "#192DA1", "#111E6C", "#0C154A"]
+                newColors = ["#4CB1F7", "#192DA1", "#111E6C", "#0C154A"]
                 break;
             case "2":
-                newColors = ["#00FF5D", "#00BF46", "#00802E", "#004017"]
+                newColors = ["#75FFB0", "#00FF5D", "#00802E", "#004017"]
                 break;
             case "3":
-                newColors = ["#BF1D3A", "#E62246", "#801327", "#400A13"]
+                newColors = ["#FB2412", "#E62246", "#801327", "#400A13"]
                 break;
             case "4":
-                newColors = ["#F2C849", "#F29D35", "#F2B33D", "#F27127"]
+                newColors = ["#FFFF5A", "#F2B33D", "#F27127", "#A64F03"]
                 break;
             default:
                 newColors = ["#2039CC", "#192DA1", "#111E6C", "#0C154A"]
@@ -361,6 +390,9 @@ window.addEventListener("load", function () {
                 break;
             case "left":
                 commands[3] = pressedKey;
+                break;
+            case "action":
+                commands[4] = pressedKey;
                 break;
             default:
                 break;

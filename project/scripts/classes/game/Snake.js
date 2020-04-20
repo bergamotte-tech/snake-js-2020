@@ -3,17 +3,19 @@ import CommandPalette from "./CommandPalette.js";
 class Snake {
   static count = 0;
 
-  constructor(ctx, scale) {
+  constructor(ctx) {
     this.id = Snake.generateId();
     this.ctx = ctx;
-    this.scale = scale;
+    this.scale = 10;
     this.name = "New player";
     this.team = 1; //1 to 4
     this.color = "white";
+    this.colorCopy = "white";
     this.score = 0;
     this.deathSound = new Audio(`assets/sounds/death.mp3`);
+    this.bitingSound = new Audio(`assets/sounds/biting.mp3`);
 
-    this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft");
+    this.commandPalette = new CommandPalette("ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft", " ");
     document.addEventListener("keydown", (e) => {
       this.commandPalette.checkKey(e);
     });
@@ -21,6 +23,10 @@ class Snake {
     this.body = [];
     this.xdir = 0;
     this.ydir = 0;
+
+    this.poisonAmmo = 0;
+    this.poisoned = false;
+    this.poisonLaps = 0;
   }
 
   static generateId() {
@@ -44,6 +50,10 @@ class Snake {
 
   setColor(color) {
     this.color = color;
+  }
+
+  setScale(scale) {
+    this.scale = scale;
   }
 
   setDirection(direction) {
@@ -89,6 +99,15 @@ class Snake {
   getColor() {
     return this.color;
   }
+  getIsPoisoned() {
+    return this.poisoned;
+  }
+  getIsBiting() {
+    return this.commandPalette.isBiting;
+  }
+  getPoisonAmmo() {
+    return this.poisonAmmo;
+  }
 
   /*------------------------------------------------------------------------------------------*/
   goingBackwards() {
@@ -105,14 +124,41 @@ class Snake {
   // FOR SUPERVISOR
   /*------------------------------------------------------------------------------------------*/
   move() {
-    const isGoingBackwards = this.goingBackwards();
-    if (!isGoingBackwards) {
-      this.setDirection(this.commandPalette.currentDirection);
+    if (!this.poisoned) {
+      const isGoingBackwards = this.goingBackwards();
+      if (!isGoingBackwards) {
+        this.setDirection(this.commandPalette.currentDirection);
+      }
+      const oldHead = this.body[this.body.length - 1];
+      const newHead = [oldHead[0] + this.xdir, oldHead[1] + this.ydir];
+      this.body.push(newHead);
+      this.body.shift();
     }
-    const oldHead = this.body[this.body.length - 1];
-    const newHead = [oldHead[0] + this.xdir, oldHead[1] + this.ydir];
-    this.body.push(newHead);
-    this.body.shift();
+    else {
+      this.poisonLaps--;
+      if (this.poisonLaps < 1) this.unpoisonSelf();
+    }
+  }
+
+  bite() {
+    if (this.poisonAmmo > 0) {
+      this.poisonAmmo--;
+      this.bitingSound.play();
+    }
+    this.commandPalette.isBiting = false;
+  }
+
+  poisonSelf(laps) {
+    this.colorCopy = this.color;
+    this.color = "#BBFF00";
+    this.poisoned = true;
+    this.poisonLaps = laps;
+  }
+
+  unpoisonSelf() {
+    this.color = this.colorCopy;
+    this.poisoned = false;
+    this.poisonLaps = 0;
   }
 
   show() {
@@ -167,6 +213,7 @@ class Snake {
           this.body.unshift([tail[0] - this.xdir, tail[1] - this.ydir]);
         }
       }
+      this.poisonAmmo++;
     } else {
       const iterations = -value;
       for (let index = 0; index < iterations; index++) {

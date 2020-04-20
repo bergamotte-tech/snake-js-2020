@@ -1,11 +1,13 @@
 class CommandPalette {
-    constructor(upKey, rightKey, downKey, leftKey) {
+    constructor(upKey, rightKey, downKey, leftKey, actionKey) {
         this.up = upKey;
         this.right = rightKey;
         this.down = downKey;
         this.left = leftKey;
+        this.action = actionKey;
 
         this.currentDirection = [0, 0];
+        this.isBiting = false;
     }
 
     checkKey(e) {
@@ -22,17 +24,21 @@ class CommandPalette {
         else if (pressedKey === this.left) {
             this.setCurrentDirection([-1, 0]);
         }
+        else if (pressedKey === this.action) {
+            this.isBiting = true;
+        }
     }
 
     setCurrentDirection(direction) {
         this.currentDirection = direction;
     }
 
-    changeCommands(upKey, rightKey, downKey, leftKey) {
+    changeCommands(upKey, rightKey, downKey, leftKey, actionKey) {
         this.up = upKey;
         this.right = rightKey;
         this.down = downKey;
         this.left = leftKey;
+        this.action = actionKey;
     }
 }
 

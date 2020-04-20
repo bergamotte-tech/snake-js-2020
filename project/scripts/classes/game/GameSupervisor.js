@@ -26,6 +26,8 @@ class GameSupervisor {
 
     this.scoreWrapper = document.getElementsByClassName("game-scores")[0];
     this.scoreList = this.initScoreList();
+    this.bestScore = 0;
+    this.bestScoreDiv = null;
 
     this.columns = this.dimensions[0];
     this.rows = this.dimensions[1];
@@ -58,8 +60,11 @@ class GameSupervisor {
   /*------------------------------------------------------------------------------------------*/
   moveSnakes() {
     this.gameSnakes.forEach(snake => {
+      if (snake.getIsPoisoned()) {
+        snake.move();
+      }
       // CHECK IF NOT DEAD BY POISON
-      if (snake.getBody().length < 1) {
+      else if (snake.getBody().length < 1) {
         snake.die();
         this.removeGameSnake(snake.getId());
       }
@@ -115,6 +120,9 @@ class GameSupervisor {
       const elementsInContact = this.getElementsInCell(x, y);
       let selfEncounter = 0; // if the snake bites itself
 
+      let snakeIsBiting = false;
+      if (snake.getIsBiting()) { snake.bite(); snakeIsBiting = true; }
+
       elementsInContact.forEach(element => {
         const elementCode = element[0];
         const elementId = element[1];
@@ -130,7 +138,13 @@ class GameSupervisor {
           //_____________________________________________________________________
           case SNAKE:
             if (snake.getId() != elementId) {
-              console.log("other snake encountered by snake n° " + snake.getId());
+              console.log("other snake encountered");
+              if (snakeIsBiting) {
+                const othersnake = this.getGameSnake(elementId);
+                const bitingPower = (snake.getBody().length / 2).toFixed(0);
+                console.log(bitingPower);
+                othersnake.poisonSelf(bitingPower);
+              }
             }
             else {
               selfEncounter++;
@@ -145,7 +159,11 @@ class GameSupervisor {
           //_____________________________________________________________________
           case FOOD:
             const food = this.getGameFood(elementId);
-            snake.grow(food.getValue());
+            const foodValue = food.getValue();
+            if (foodValue < 0) {
+              snake.poisonSelf(foodValue);
+            }
+            snake.grow(foodValue);
             this.handleTailOutOfBorders(snake);
             food.playSound();
             this.createNewFood(food);
@@ -182,26 +200,18 @@ class GameSupervisor {
         if (x < 0) {
           snake.body[index][0] = this.grid[0].length - 1 - detections;
           detections++;
-          console.log(snake.body);
-
         }
         else if (x >= this.grid[0].length) {
           snake.body[index][0] = 0 + detections;
           detections++;
-          console.log(snake.body);
-
         }
         else if (y < 0) {
           snake.body[index][1] = this.grid.length - 1 - detections;
           detections++;
-          console.log(snake.body);
-
         }
         else if (y >= this.grid.length) {
           snake.body[index][1] = 0 + detections;
           detections++;
-          console.log(snake.body);
-
         }
         body[index] = [coordinates[0], coordinates[1]];
       };
@@ -233,18 +243,34 @@ class GameSupervisor {
 
   /*------------------------------------------------------------------------------------------*/
   updateScore(snake) {
-    let bestScore = localStorage.getItem('level' + this.levelNumber + 'BestScore');
-    if (bestScore == null || bestScore == undefined) bestScore = 0;
-
-
     this.scoreList.forEach(element => {
       if (element[0] === snake.getId()) {
+        //AMMO
+        const ammoArea = element[4];
+        const snakeAmmo = snake.getPoisonAmmo();
+        ammoArea.innerHTML = "💧" + snakeAmmo;
+
+
+
+        //SCORE
         const scoreArea = element[2];
         const snakeScore = snake.getScore();
-        scoreArea.innerHTML = snakeScore;
-        if (snakeScore > bestScore) {
-          localStorage.setItem('level' + this.levelNumber + 'BestScore', snakeScore.toString());
-          localStorage.setItem('level' + this.levelNumber + 'BestPlayer', snake.getName());
+        if (snakeScore) {
+
+          scoreArea.innerHTML = snakeScore;
+          if (snakeScore > this.bestScore) {
+            this.bestScore = snakeScore;
+            if (this.bestScoreDiv) this.bestScoreDiv.classList.remove("winner");
+            this.bestScoreDiv = element[1];
+            this.bestScoreDiv.classList.add("winner");
+
+            let allTimeBest = localStorage.getItem('level' + this.levelNumber + 'BestScore');
+            if (!allTimeBest) allTimeBest = 0;
+            if (snakeScore > allTimeBest) {
+              localStorage.setItem('level' + this.levelNumber + 'BestScore', snakeScore.toString());
+              localStorage.setItem('level' + this.levelNumber + 'BestPlayer', snake.getName());
+            }
+          }
         }
       }
     });
@@ -327,21 +353,32 @@ class GameSupervisor {
 
   /*------------------------------------------------------------------------------------------*/
   removeGameSnake(id) {
-    //DISPLAY DEAD ON GAMER TAG
+    //DISPLAY DEAD ON SCORE LIST
     this.scoreList.forEach(element => {
       if (element[0] === id) {
-        const name = element[3];
-        name.innerHTML = "RIP " + name.innerHTML + " X_X"
+        const div = element[1];
+        div.classList.remove("winner");
+        div.classList.add("dead");
       }
     });
-
     //REMOMVE FROM ARRAY
     for (let index = 0; index < this.gameSnakes.length; index++) {
       const snake = this.gameSnakes[index];
       if (snake.getId() === id) {
+        snake.score = null;
         const del = this.gameSnakes.splice(index, 1);
       }
     }
+  }
+  getGameSnake(id) {
+    let snake;
+    for (let index = 0; index < this.gameSnakes.length; index++) {
+      snake = this.gameSnakes[index];
+      if (snake.getId() === id) {
+        index = this.gameSnakes.length;
+      }
+    }
+    return snake;
   }
 
   removeGameFood(id) {
@@ -352,7 +389,6 @@ class GameSupervisor {
       }
     }
   }
-
   getGameFood(id) {
     let food;
     for (let index = 0; index < this.gameFoods.length; index++) {
@@ -390,21 +426,26 @@ class GameSupervisor {
 
     this.gameSnakes.forEach(snake => {
       const scoreDiv = document.createElement('div');
-      scoreDiv.classList.add("score-row");
+      scoreDiv.classList.add("score-container");
       scoreDiv.style.backgroundColor = snake.getColor();
 
       const score = document.createElement('h1');
       score.classList.add("score-value");
-      score.innerHTML = snake.getScore().toString();
+      score.innerHTML = 0;
       scoreDiv.appendChild(score);
 
-      const name = document.createElement('h3');
+      const name = document.createElement('pre');
       name.classList.add("score-name");
       name.innerHTML = snake.getName();
       scoreDiv.appendChild(name);
 
+      const poisonAmmo = document.createElement('p');
+      poisonAmmo.classList.add("score-poison");
+      poisonAmmo.innerHTML = "💧" + "0";
+      scoreDiv.appendChild(poisonAmmo);
+
       scoreWrapper.appendChild(scoreDiv);
-      scoreList.push([snake.getId(), scoreDiv, score, name]);
+      scoreList.push([snake.getId(), scoreDiv, score, name, poisonAmmo]);
     });
 
     return scoreList;
