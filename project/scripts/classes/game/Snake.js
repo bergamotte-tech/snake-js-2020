@@ -108,6 +108,9 @@ class Snake {
   getPoisonAmmo() {
     return this.poisonAmmo;
   }
+  getTeam() {
+    return this.team;
+  }
 
   /*------------------------------------------------------------------------------------------*/
   goingBackwards() {

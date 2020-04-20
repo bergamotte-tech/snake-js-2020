@@ -138,12 +138,11 @@ class GameSupervisor {
           //_____________________________________________________________________
           case SNAKE:
             if (snake.getId() != elementId) {
-              console.log("other snake encountered");
               if (snakeIsBiting) {
                 const othersnake = this.getGameSnake(elementId);
                 const bitingPower = (snake.getBody().length / 2).toFixed(0);
-                console.log(bitingPower);
                 othersnake.poisonSelf(bitingPower);
+                othersnake.grow(-bitingPower);
               }
             }
             else {
@@ -248,7 +247,7 @@ class GameSupervisor {
         //AMMO
         const ammoArea = element[4];
         const snakeAmmo = snake.getPoisonAmmo();
-        ammoArea.innerHTML = "💧" + snakeAmmo;
+        ammoArea.innerHTML = snakeAmmo + "🐍";;
 
 
 
@@ -361,11 +360,10 @@ class GameSupervisor {
         div.classList.add("dead");
       }
     });
-    //REMOMVE FROM ARRAY
+    //REMOVE FROM ARRAY
     for (let index = 0; index < this.gameSnakes.length; index++) {
       const snake = this.gameSnakes[index];
       if (snake.getId() === id) {
-        snake.score = null;
         const del = this.gameSnakes.splice(index, 1);
       }
     }
@@ -406,7 +404,7 @@ class GameSupervisor {
 
     const ctx = food.getCtx();
     const scale = food.getScale();
-    const probabilities = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3];
+    const probabilities = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3];
     const nbFoods = probabilities[(Math.floor(Math.random() * (probabilities.length)))];
 
     this.removeGameFood(food.getId());
@@ -441,7 +439,7 @@ class GameSupervisor {
 
       const poisonAmmo = document.createElement('p');
       poisonAmmo.classList.add("score-poison");
-      poisonAmmo.innerHTML = "💧" + "0";
+      poisonAmmo.innerHTML = "0" + "🐍";
       scoreDiv.appendChild(poisonAmmo);
 
       scoreWrapper.appendChild(scoreDiv);
