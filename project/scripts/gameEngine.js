@@ -61,7 +61,7 @@ function startLoop(canvas, ctx, gameSupervisor, gameSnakes, levelNumber) {
   var music = new Audio(`assets/sounds/level${levelNumber}.mp3`);
   music.loop = true;
   music.volume = 0.5;
-  const originalPlayBackRate = 0.65;
+  const originalPlayBackRate = 0.7;
   let newPlayBackRate;
   // var gameOver = new Audio(`assets/sounds/gameOver.mp3`);
   // gameOver.loop = false;
@@ -188,21 +188,23 @@ function createWalls(ctx, scale, wallsCoordinates) {
 /*------------------------------------------------------------------------------------------*/
 
 function getWinningTeams(gameSnakes) {
-  const teamTotals = [0, 0, 0, 0];
+  const teamTotals = [null, null, null, null];
   gameSnakes.forEach(snake => {
     const index = snake.getTeam() - 1;
-    teamTotals[index] += snake.getScore();
+    if (teamTotals[index]) teamTotals[index] += snake.getScore();
+    else teamTotals[index] = snake.getScore();
   });
 
   let maxIndexes = [0];
   for (let index = 1; index < teamTotals.length; index++) {
-    if (teamTotals[index] > teamTotals[maxIndexes[0]]) maxIndexes = [index];
-    else if (teamTotals[index] === teamTotals[maxIndexes[0]]) maxIndexes.push(index);
+    if (teamTotals[index]) {
+      if (teamTotals[index] > teamTotals[maxIndexes[0]]) maxIndexes = [index];
+      else if (teamTotals[index] === teamTotals[maxIndexes[0]]) maxIndexes.push(index);
+    }
   }
 
   let sentence;
   let teams = [];
-  console.log(maxIndexes);
 
   maxIndexes.forEach(index => {
     switch (index) {
@@ -222,7 +224,7 @@ function getWinningTeams(gameSnakes) {
         break;
     }
   });
-  if (maxIndexes.length > 1) {
+  if (teams.length > 1) {
     sentence = "It's a draw between" + teams.toString() + " !";
   }
   else {

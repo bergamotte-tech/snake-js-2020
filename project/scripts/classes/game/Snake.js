@@ -50,6 +50,7 @@ class Snake {
 
   setColor(color) {
     this.color = color;
+    this.colorCopy = color;
   }
 
   setScale(scale) {
@@ -159,9 +160,11 @@ class Snake {
   }
 
   unpoisonSelf() {
-    this.color = this.colorCopy;
-    this.poisoned = false;
-    this.poisonLaps = 0;
+    if (this.poisoned) {
+      this.color = this.colorCopy;
+      this.poisoned = false;
+      this.poisonLaps = 0;
+    }
   }
 
   show() {
@@ -227,13 +230,13 @@ class Snake {
   }
 
   die() {
-    this.unpoisonSelf();
     this.deathSound.play();
   }
 
   reset() {
     this.score = null;
     this.poisonAmmo = 0;
+    this.unpoisonSelf();
   }
   /*------------------------------------------------------------------------------------------*/
 }

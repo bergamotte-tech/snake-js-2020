@@ -60,15 +60,14 @@ class GameSupervisor {
   /*------------------------------------------------------------------------------------------*/
   moveSnakes() {
     this.gameSnakes.forEach(snake => {
-      if (snake.getIsPoisoned()) {
-        snake.move();
-      }
       // CHECK IF NOT DEAD BY POISON
-      else if (snake.getBody().length < 1) {
+      if (snake.getBody().length < 1) {
         snake.die();
         this.removeGameSnake(snake.getId());
       }
-
+      else if (snake.getIsPoisoned()) {
+        snake.move();
+      }
       else {
         // REMOVE OLD TAIL FROM GRID
         const snakeTail = snake.getBody()[0];
@@ -121,7 +120,7 @@ class GameSupervisor {
       let selfEncounter = 0; // if the snake bites itself
 
       let snakeIsBiting = false;
-      if (snake.getIsBiting()) { snake.bite(); snakeIsBiting = true; }
+      if (snake.getIsBiting() && snake.getPoisonAmmo() > 0) { snake.bite(); snakeIsBiting = true; }
 
       elementsInContact.forEach(element => {
         const elementCode = element[0];
@@ -166,7 +165,7 @@ class GameSupervisor {
             this.handleTailOutOfBorders(snake);
             food.playSound();
             this.createNewFood(food);
-            if (this.delay > this.minimumDelay) this.delay -= this.delay / 20;
+            if (this.delay > this.minimumDelay) this.delay -= 10;
             break;
           //_____________________________________________________________________
 
