@@ -65,16 +65,16 @@ class Food {
         color = "#BBFF00";
         break;
       case 1:
-        color = "#E277BB";
+        color = "#9B70FF";
         break;
       case 2:
-        color = "#7B52AB";
+        color = "#4700FF";
         break;
       case 3:
-        color = "#553285";
+        color = "#860CE8";
         break;
       case 4:
-        color = "#7419FF";
+        color = "#D50DFF";
         break;
       case 5:
         color = "#F2055C";

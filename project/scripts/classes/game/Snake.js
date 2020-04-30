@@ -50,6 +50,7 @@ class Snake {
 
   setColor(color) {
     this.color = color;
+    this.colorCopy = color;
   }
 
   setScale(scale) {
@@ -108,6 +109,9 @@ class Snake {
   getPoisonAmmo() {
     return this.poisonAmmo;
   }
+  getTeam() {
+    return this.team;
+  }
 
   /*------------------------------------------------------------------------------------------*/
   goingBackwards() {
@@ -156,9 +160,11 @@ class Snake {
   }
 
   unpoisonSelf() {
-    this.color = this.colorCopy;
-    this.poisoned = false;
-    this.poisonLaps = 0;
+    if (this.poisoned) {
+      this.color = this.colorCopy;
+      this.poisoned = false;
+      this.poisonLaps = 0;
+    }
   }
 
   show() {
@@ -225,6 +231,12 @@ class Snake {
 
   die() {
     this.deathSound.play();
+  }
+
+  reset() {
+    this.score = null;
+    this.poisonAmmo = 0;
+    this.unpoisonSelf();
   }
   /*------------------------------------------------------------------------------------------*/
 }

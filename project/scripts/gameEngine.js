@@ -12,9 +12,18 @@ async function runGame(canvas, ctx, mode, levelNumber, gameSnakes) {
     // GET LEVEL INFOS
     const level = await getLevelObject(mode, levelNumber);
 
-    // CREATE ELEMENTS
-    const scale = ((canvas.parentNode.clientWidth / level.dimensions[0]) * 0.5).toFixed(0);
+    let scale;
+    const widthRatio = (canvas.parentNode.clientWidth / level.dimensions[0]).toFixed(0);
+    const heightRatio = (canvas.parentNode.clientHeight / level.dimensions[1]).toFixed(0);
 
+    if (widthRatio < heightRatio) {
+      scale = (widthRatio * 0.95).toFixed(0);
+    }
+    else {
+      scale = (heightRatio * 0.95).toFixed(0);
+    }
+
+    // CREATE ELEMENTS
     placeSnakes(gameSnakes, scale, level.snakes);
     const gameFoods = createFoods(ctx, scale, level.foods);
     const gameWalls = createWalls(ctx, scale, level.walls);
@@ -40,7 +49,7 @@ async function runGame(canvas, ctx, mode, levelNumber, gameSnakes) {
     );
 
     // LAUNCH
-    startLoop(canvas, ctx, gameSupervisor, levelNumber);
+    startLoop(canvas, ctx, gameSupervisor, gameSnakes, levelNumber);
   } else console.error("Mode " + mode + " does not exist");
   return 0;
 }
@@ -48,15 +57,15 @@ async function runGame(canvas, ctx, mode, levelNumber, gameSnakes) {
 
 // FUNCTIONS
 /*------------------------------------------------------------------------------------------*/
-function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
+function startLoop(canvas, ctx, gameSupervisor, gameSnakes, levelNumber) {
   var music = new Audio(`assets/sounds/level${levelNumber}.mp3`);
-  var gameOver = new Audio(`assets/sounds/gameOver.mp3`);
-  const originalPlayBackRate = 0.6;
-  let newPlayBackRate;
   music.loop = true;
-  music.volume = 0.4;
-  gameOver.loop = false;
-  gameOver.volume = 0.4;
+  music.volume = 0.5;
+  const originalPlayBackRate = 0.7;
+  let newPlayBackRate;
+  // var gameOver = new Audio(`assets/sounds/gameOver.mp3`);
+  // gameOver.loop = false;
+  // gameOver.volume = 0.4;
 
   const instanceNumber = globalInstanceNumber;
   var interval;
@@ -71,12 +80,18 @@ function startLoop(canvas, ctx, gameSupervisor, levelNumber) {
         const div = element[1];
         div.remove();
       });
+      gameSnakes.forEach(snake => {
+        snake.reset();
+      });
     }
     else if (over) {
       if (!alreadyTriggered) {
-        gameOver.play();
+        // gameOver.play();
         music.volume = 0.2;
         music.playbackRate = 1;
+        const title = document.getElementsByClassName("arcade-title")[0];
+        const winningTeams = getWinningTeams(gameSnakes);
+        title.innerHTML = winningTeams;
         alreadyTriggered = true;
       }
       setTimeout(loopFunction, 200);
@@ -113,7 +128,7 @@ function resizeCanvas(canvas, width, height, hasBorders) {
   canvas.width = width;
   canvas.height = height;
   if (hasBorders) {
-    canvas.style.border = "solid #5F6A73 5px"
+    canvas.style.border = "solid #5F6A73 0.5rem"
   }
 }
 /*------------------------------------------------------------------------------------------*/
@@ -128,7 +143,7 @@ function clearCanvas(canvas, ctx) {
 /*------------------------------------------------------------------------------------------*/
 async function getLevelObject(mode, levelNumber) {
   const response = await fetch(
-    `./config/levels/${mode}/level${levelNumber}.json`
+    `./config/levels/level${levelNumber}.json`
   ).then((response) => response.json());
 
   for (var i = 0; i < response.length; i++) {
@@ -171,6 +186,54 @@ function createWalls(ctx, scale, wallsCoordinates) {
   return gameWalls;
 }
 /*------------------------------------------------------------------------------------------*/
+
+function getWinningTeams(gameSnakes) {
+  const teamTotals = [null, null, null, null];
+  gameSnakes.forEach(snake => {
+    const index = snake.getTeam() - 1;
+    if (teamTotals[index]) teamTotals[index] += snake.getScore();
+    else teamTotals[index] = snake.getScore();
+  });
+
+  let maxIndexes = [0];
+  for (let index = 1; index < teamTotals.length; index++) {
+    if (teamTotals[index]) {
+      if (teamTotals[index] > teamTotals[maxIndexes[0]]) maxIndexes = [index];
+      else if (teamTotals[index] === teamTotals[maxIndexes[0]]) maxIndexes.push(index);
+    }
+  }
+
+  let sentence;
+  let teams = [];
+
+  maxIndexes.forEach(index => {
+    switch (index) {
+      case 0:
+        teams.push(" Blue");
+        break;
+      case 1:
+        teams.push(" Green");
+        break;
+      case 2:
+        teams.push(" Red");
+        break;
+      case 3:
+        teams.push(" Yellow");
+        break;
+      default:
+        break;
+    }
+  });
+  if (teams.length > 1) {
+    sentence = "It's a draw between" + teams.toString() + " !";
+  }
+  else {
+    sentence = teams[0] + " team wins !";
+  }
+  //   const teamNames=[, "Blue", "Green", "Red", "Yellow"];
+  // console.log(`It's a draw between teams ${teams.map(t => teamNames[t]).join(', ')}`);
+  return sentence;
+}
 
 
 export { runGame as default };

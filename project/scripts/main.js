@@ -302,7 +302,10 @@ window.addEventListener("load", function () {
         team3.innerHTML = "3";
         const team4 = document.createElement('option');
         team4.innerHTML = "4";
+
         snake.setTeam(parseInt(team1.innerHTML))
+        snake.setColor(color1.style.backgroundColor);
+
         const options = [team1, team2, team3, team4];
         options.forEach(team => {
             team.addEventListener("click", function () {
@@ -316,7 +319,7 @@ window.addEventListener("load", function () {
         playerDiv.appendChild(playerTeam);
         playerDiv.appendChild(colorPalette);
         playerDiv.style.backgroundColor = color1.style.backgroundColor;
-        snake.setColor(color1.style.backgroundColor);
+
 
         const labelTeam = document.createElement('label');
         labelTeam.innerHTML = "Team : ";
